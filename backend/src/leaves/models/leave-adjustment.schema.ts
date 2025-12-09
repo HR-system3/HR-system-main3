@@ -1,7 +1,7 @@
-
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Schema as MongooseSchema } from 'mongoose';
+
 import { HydratedDocument, Types } from 'mongoose';
-import { AdjustmentType } from '../enums/adjustment-type.enum';
 
 export type LeaveAdjustmentDocument = HydratedDocument<LeaveAdjustment>;
 
@@ -13,18 +13,21 @@ export class LeaveAdjustment {
   @Prop({ type: Types.ObjectId, ref: 'LeaveType', required: true })
   leaveTypeId: Types.ObjectId;
 
-  @Prop({ enum: AdjustmentType, required: true })
-  adjustmentType: AdjustmentType;
-
   @Prop({ required: true })
-  amount: number;
+  change: number; // positive or negative
 
   @Prop({ required: true })
   reason: string;
 
-  @Prop({ type: Types.ObjectId, ref: 'Employee', required: true })
-  hrUserId: Types.ObjectId;
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  adjustedBy: Types.ObjectId;
+
+  @Prop()
+  effectiveDate?: Date;
+
+  @Prop({ type: MongooseSchema.Types.Mixed, default: {} })
+  meta?: Record<string, any>;
+
 }
 
-export const LeaveAdjustmentSchema =
-  SchemaFactory.createForClass(LeaveAdjustment);
+export const LeaveAdjustmentSchema = SchemaFactory.createForClass(LeaveAdjustment);

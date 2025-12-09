@@ -1,7 +1,6 @@
-
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
-import { AttachmentType } from '../enums/attachment-type.enum';
+import { AttachmentType } from './attachment.schema';
 
 export type LeaveTypeDocument = HydratedDocument<LeaveType>;
 
@@ -14,21 +13,15 @@ export class LeaveType {
   name: string;
 
   @Prop({ type: Types.ObjectId, ref: 'LeaveCategory', required: true })
-  categoryId: Types.ObjectId;
-
-  @Prop()
-  description?: string;
-
-  @Prop({ default: true })
-  paid: boolean;
-
-  @Prop({ default: true })
-  deductible: boolean;
+  category: Types.ObjectId;
 
   @Prop({ default: false })
-  requiresAttachment: boolean;
+  isPaid?: boolean;
 
-  @Prop({ enum: AttachmentType })
+  @Prop({ default: false })
+  requiresAttachment?: boolean;
+
+  @Prop({ enum: Object.values(AttachmentType), required: false })
   attachmentType?: AttachmentType;
 
   @Prop({ default: null })
@@ -36,6 +29,18 @@ export class LeaveType {
 
   @Prop({ default: null })
   maxDurationDays?: number;
+
+  @Prop({ default: false })
+  allowPostLeaveSubmission?: boolean;
+
+  @Prop({ default: false })
+  pauseAccrual?: boolean; // e.g., maternity may pause accrual
+
+  @Prop({ default: '' })
+  payrollPayCode?: string; // linkage to payroll
+
+  @Prop({ type: Object, default: {} })
+  meta?: Record<string, any>; // For accrual frequency and other config
 }
 
 export const LeaveTypeSchema = SchemaFactory.createForClass(LeaveType);

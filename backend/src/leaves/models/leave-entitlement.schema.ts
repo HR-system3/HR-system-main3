@@ -1,44 +1,33 @@
-// schemas/leave-entitlement.schema.ts
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Schema as MongooseSchema } from 'mongoose';
+
 import { HydratedDocument, Types } from 'mongoose';
 
 export type LeaveEntitlementDocument = HydratedDocument<LeaveEntitlement>;
 
 @Schema({ timestamps: true })
 export class LeaveEntitlement {
-  @Prop({ type: Types.ObjectId, ref: 'Employee', required: true })
-  employeeId: Types.ObjectId;
+  @Prop({ type: Types.ObjectId, ref: 'Employee', required: false })
+  employeeId?: Types.ObjectId; // if personalized
 
   @Prop({ type: Types.ObjectId, ref: 'LeaveType', required: true })
   leaveTypeId: Types.ObjectId;
 
-  @Prop({ default: 0 })
-  yearlyEntitlement: number;
+  @Prop({ required: true })
+  entitlementDays: number;
 
-  @Prop({ default: 0 })
-  accruedActual: number;
+  @Prop({ default: null })
+  accrualRatePerMonth?: number;
 
-  @Prop({ default: 0 })
-  accruedRounded: number;
+  @Prop({ default: null })
+  carryOverMax?: number;
 
-  @Prop({ default: 0 })
-  carryForward: number;
+  @Prop({ default: null })
+  expiryMonths?: number; // months after which carried days expire
 
-  @Prop({ default: 0 })
-  taken: number;
+  @Prop({ type: MongooseSchema.Types.Mixed, default: {} })
+  meta?: Record<string, any>;
 
-  @Prop({ default: 0 })
-  pending: number;
-
-  @Prop({ default: 0 })
-  remaining: number;
-
-  @Prop()
-  lastAccrualDate?: Date;
-
-  @Prop()
-  nextResetDate?: Date;
 }
 
-export const LeaveEntitlementSchema =
-  SchemaFactory.createForClass(LeaveEntitlement);
+export const LeaveEntitlementSchema = SchemaFactory.createForClass(LeaveEntitlement);

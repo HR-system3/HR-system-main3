@@ -2,20 +2,29 @@
 
 export type AttendanceStatus = 'present' | 'late' | 'absent' | 'on-leave';
 
+export interface Punch {
+  type: 'IN' | 'OUT';
+  time: string | Date;
+}
+
 export interface AttendanceRecord {
   _id: string;
   employeeId: string;
-  date: string;
+  punches: Punch[];
+  totalWorkMinutes: number;
+  hasMissedPunch: boolean;
+  exceptionIds?: string[];
+  finalisedForPayroll: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+  // Computed fields for frontend
+  date?: string;
   clockIn?: string;
   clockOut?: string;
-  status: AttendanceStatus;
-  isLate: boolean;
+  status?: AttendanceStatus;
+  isLate?: boolean;
   workingHours?: number;
-  overtime?: number;
   notes?: string;
-  shiftId?: string;
-  createdAt: string;
-  updatedAt: string;
 }
 
 export interface TodayAttendance {

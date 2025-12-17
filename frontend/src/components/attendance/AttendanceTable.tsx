@@ -61,30 +61,45 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {records.map((record) => (
-              <tr key={record._id} className="hover:bg-gray-50 transition-colors">
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {formatDate(record.date)}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                  {record.clockIn ? formatTime(record.clockIn) : '--:--'}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                  {record.clockOut ? formatTime(record.clockOut) : '--:--'}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                  {record.clockIn && record.clockOut
-                    ? calculateWorkingHours(record.clockIn, record.clockOut)
-                    : '--'}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <StatusBadge status={record.status} isLate={record.isLate} />
-                </td>
-                <td className="px-6 py-4 text-sm text-gray-600">
-                  {record.notes || '--'}
-                </td>
-              </tr>
-            ))}
+            {records.map((record) => {
+              // Compute date from punches if not available
+              const inPunch = record.punches?.find((p) => p.type === 'IN');
+              const computedDate =
+                record.date ||
+                (inPunch?.time
+                  ? new Date(inPunch.time).toISOString().split('T')[0]
+                  : new Date().toISOString().split('T')[0]);
+
+              return (
+                <tr key={record._id} className="hover:bg-gray-50 transition-colors">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    {formatDate(computedDate)}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                    {record.clockIn ? formatTime(record.clockIn) : '--:--'}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                    {record.clockOut ? formatTime(record.clockOut) : '--:--'}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                    {record.clockIn && record.clockOut
+                      ? calculateWorkingHours(record.clockIn, record.clockOut)
+                      : record.totalWorkMinutes
+                        ? `${Math.floor(record.totalWorkMinutes / 60)}h ${record.totalWorkMinutes % 60}m`
+                        : '--'}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <StatusBadge
+                      status={record.status || (record.hasMissedPunch ? 'absent' : 'present')}
+                      isLate={record.isLate}
+                    />
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-600">
+                    {record.notes || '--'}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

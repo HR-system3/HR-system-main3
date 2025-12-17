@@ -16,12 +16,14 @@ import { RegisterRequestDto } from './dto/RegisterRequestDto';
 import { SignInDto } from './dto/SignInDto';
 import { AuthGuard } from './guards/authentication.guard';
 import { UsersService } from '../users/users.service';
+import { EmployeeProfileService } from '../employee-profile/employee-profile.service';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private authService: AuthService,
     private userService: UsersService,
+    private employeeProfileService: EmployeeProfileService,
   ) {}
 
   @Post('login')
@@ -80,11 +82,21 @@ export class AuthController {
     const userId = (req as any).user.userid;
     const user = await this.userService.findById(userId);
 
+    // Try to find EmployeeProfile by email
+    let employeeId = null;
+    if (user?.email) {
+      const profile = await this.employeeProfileService.findByEmail(user.email);
+      if (profile) {
+        employeeId = (profile as any)._id?.toString() || null;
+      }
+    }
+
     return {
       id: userId,
       name: user?.name,
       email: user?.email,
       role: user?.role,
+      employeeId, // Add employeeId if found
     };
   }
 

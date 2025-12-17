@@ -5,6 +5,7 @@ import * as dotenv from 'dotenv';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UsersModule } from '../users/users.module';
+import { EmployeeProfileModule } from '../employee-profile/employee-profile.module';
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ const jwtExpiresIn: number = parseInt(process.env.JWT_EXPIRES_IN ?? '3600', 10);
 @Module({
   imports: [
     UsersModule,
+    EmployeeProfileModule,
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,

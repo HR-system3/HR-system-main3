@@ -98,6 +98,18 @@ export class EmployeeProfileService {
       .exec();
   }
 
+  /**
+   * Find EmployeeProfile by email (personalEmail or workEmail)
+   * Used to link User to EmployeeProfile
+   */
+  async findByEmail(email: string): Promise<EmployeeProfile | null> {
+    return this.employeeProfileModel
+      .findOne({
+        $or: [{ personalEmail: email }, { workEmail: email }],
+      })
+      .exec();
+  }
+
   async updateEmployeeProfile(
     id: string,
     dto: UpdateEmployeeProfileDto,

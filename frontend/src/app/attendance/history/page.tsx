@@ -4,41 +4,52 @@ import React, { useEffect, useState } from 'react';
 import AttendanceTable from '@/components/attendance/AttendanceTable';
 import { AttendanceRecord } from '@/types/attendance';
 import Link from 'next/link';
+import { attendanceService } from '@/services/attendance.service';
+import { getEmployeeId, getUserId } from '@/lib/utils/auth';
+import toast from 'react-hot-toast';
 
 export default function AttendanceHistoryPage() {
   const [records, setRecords] = useState<AttendanceRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Mock data (Member 2 will replace)
   useEffect(() => {
-    setTimeout(() => {
-      setRecords([
-        {
-          _id: '1',
-          employeeId: 'EMP001',
-          date: '2024-12-14',
-          clockIn: '2024-12-14T09:00:00Z',
-          clockOut: '2024-12-14T17:00:00Z',
-          status: 'present',
-          isLate: false,
-          createdAt: '',
-          updatedAt: '',
-        },
-        {
-          _id: '2',
-          employeeId: 'EMP001',
-          date: '2024-12-13',
-          clockIn: '2024-12-13T09:15:00Z',
-          clockOut: '2024-12-13T17:00:00Z',
-          status: 'late',
-          isLate: true,
-          notes: 'Traffic delay',
-          createdAt: '',
-          updatedAt: '',
-        },
-      ]);
-      setIsLoading(false);
-    }, 1000);
+    const fetchHistory = async () => {
+      const empId = await getEmployeeId() || getUserId();
+      if (!empId) {
+        toast.error('Please login to continue');
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        // Get last 30 days of attendance
+        const toDate = new Date();
+        const fromDate = new Date();
+        fromDate.setDate(fromDate.getDate() - 30);
+
+        const data = await attendanceService.getAttendance({
+          employeeId: empId,
+          fromDate: fromDate.toISOString(),
+          toDate: toDate.toISOString(),
+        });
+        
+        // Sort by date descending
+        const sorted = data.sort((a, b) => {
+          const aDate = a.date || '';
+          const bDate = b.date || '';
+          return bDate.localeCompare(aDate);
+        });
+        
+        setRecords(sorted);
+      } catch (error: any) {
+        console.error('Error fetching attendance history:', error);
+        toast.error(error?.response?.data?.message || 'Failed to load attendance history');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchHistory();
   }, []);
 
   return (

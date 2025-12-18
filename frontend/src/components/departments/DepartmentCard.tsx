@@ -4,7 +4,7 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import Card from '@/components/common/Card';
 import { Department } from '@/types/department.types';
-import { formatDate } from '@/lib/utils';
+import { formatDate } from '@/lib/utils/utils';
 
 interface DepartmentCardProps {
   department: Department;

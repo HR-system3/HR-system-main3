@@ -18,7 +18,7 @@ import {
 import { AuthGuard } from '../auth/guards/authentication.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
-import { Role } from '../auth/roles.enum';
+import { Role } from '../auth/enums/roles.enum';
 
 @Controller('attendance')
 @UseGuards(AuthGuard)

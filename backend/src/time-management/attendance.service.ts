@@ -164,4 +164,61 @@ export class AttendanceService {
     // For MS2, we only update status and keep it simple.
     return correction;
   }
+
+  /**
+   * Get correction requests for an employee
+   */
+  async getMyCorrections(employeeId: string) {
+    return this.correctionModel
+      .find({
+        employeeId: new Types.ObjectId(employeeId),
+      })
+      .sort({ createdAt: -1 })
+      .lean();
+  }
+
+  /**
+   * Get pending correction requests (for managers/HR)
+   */
+  async getPendingCorrections() {
+    return this.correctionModel
+      .find({
+        status: {
+          $in: [
+            CorrectionRequestStatus.SUBMITTED,
+            CorrectionRequestStatus.IN_REVIEW,
+          ],
+        },
+      })
+      .sort({ createdAt: -1 })
+      .lean();
+  }
+
+  /**
+   * Get team attendance (for managers)
+   */
+  async getTeamAttendance(params: {
+    departmentId?: string;
+    fromDate?: string;
+    toDate?: string;
+  }) {
+    const filter: any = {};
+
+    // For now, we'll return all attendance records
+    // In production, filter by department based on employee's departmentId
+    // This would require joining with EmployeeProfile to get departmentId
+    if (params.departmentId) {
+      // TODO: Filter by department when EmployeeProfile integration is available
+      // For now, we'll return all records
+    }
+
+    if (params.fromDate || params.toDate) {
+      const dateFilter: any = {};
+      if (params.fromDate) dateFilter.$gte = new Date(params.fromDate);
+      if (params.toDate) dateFilter.$lte = new Date(params.toDate);
+      filter['punches.time'] = dateFilter;
+    }
+
+    return this.attendanceModel.find(filter).sort({ createdAt: -1 }).lean();
+  }
 }

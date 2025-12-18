@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import AttendanceTable from '@/components/attendance/AttendanceTable';
 import { AttendanceRecord } from '@/types/attendance';
 import Link from 'next/link';
-import { attendanceService } from '@/services/attendance.service';
+import { attendanceService } from '@/services/api/attendance.service';
 import { getEmployeeId, getUserId } from '@/lib/utils/auth';
 import toast from 'react-hot-toast';
 

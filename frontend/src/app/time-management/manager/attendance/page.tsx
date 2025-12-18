@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { attendanceService } from '@/services/attendance.service';
+import { attendanceService } from '@/services/api/attendance.service';
 import { AttendanceRecord } from '@/types/attendance';
 import AttendanceTable from '@/components/attendance/AttendanceTable';
 import { isManager } from '@/lib/utils/auth';

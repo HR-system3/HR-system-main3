@@ -1,54 +1,31 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { getToken, getUserRole, isManager } from '@/lib/utils/auth';
+import { useAuth } from '@/hooks/useAuth';
+import Loading from '@/components/common/Loading';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  requireManager?: boolean;
 }
 
-export default function ProtectedRoute({ children, requireManager = false }: ProtectedRouteProps) {
+export default function ProtectedRoute({ children }: ProtectedRouteProps) {
+  const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
-  const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
-    const token = getToken();
-    
-    if (!token) {
+    if (!isLoading && !isAuthenticated) {
       router.push('/login');
-      return;
     }
-
-    // If manager role required, check it
-    if (requireManager) {
-      if (!isManager()) {
-        router.push('/attendance');
-        return;
-      }
-    }
-
-    setIsAuthorized(true);
-    setIsLoading(false);
-  }, [router, requireManager]);
+  }, [isAuthenticated, isLoading, router]);
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
-        </div>
-      </div>
-    );
+    return <Loading size="lg" text="Loading..." />;
   }
 
-  if (!isAuthorized) {
+  if (!isAuthenticated) {
     return null;
   }
 
   return <>{children}</>;
 }
-

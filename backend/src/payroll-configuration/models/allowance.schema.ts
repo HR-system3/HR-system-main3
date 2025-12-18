@@ -14,6 +14,10 @@ export class allowance {
     name: string; // allowance name like:  Housing Allowance, Transport Allowance
     @Prop({ required: true, min: 0 })
     amount: number;
+    @Prop({ required: true, type: String, enum: ['FIXED', 'VARIABLE'], default: 'FIXED' })
+    type: string; // FIXED or VARIABLE
+    @Prop({ required: true, default: false })
+    taxable: boolean; // whether this allowance is taxable
    @Prop({ required: true, type: String, enum: ConfigStatus,default:ConfigStatus.DRAFT })
     status: ConfigStatus;// draft, approved, rejected
 

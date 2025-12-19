@@ -6,7 +6,7 @@ import TodayStatusCard from '@/components/attendance/TodayStatusCard';
 import { TodayAttendance } from '@/types/attendance';
 import Link from 'next/link';
 import { attendanceService } from '@/services/api/attendance.service';
-import { getEmployeeId, getUserId } from '@/lib/utils/auth';
+import { getEmployeeId, getUserId } from '@/lib/auth';
 import toast from 'react-hot-toast';
 
 export default function AttendancePage() {
@@ -96,13 +96,13 @@ export default function AttendancePage() {
         <h1 className="text-3xl font-bold text-gray-900">Attendance</h1>
         <div className="flex gap-4">
           <Link 
-            href="/attendance/correction" 
+            href="/time-management/attendance/correction" 
             className="text-blue-600 hover:underline"
           >
             Request Correction
           </Link>
           <Link 
-            href="/attendance/history" 
+            href="/time-management/attendance/history" 
             className="text-blue-600 hover:underline"
           >
             View History

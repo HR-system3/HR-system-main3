@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Clock, Calendar, Timer } from 'lucide-react';
-import { formatTime, getCurrentTime } from '@/lib/utils/time';
+import { formatTime, getCurrentTime } from '@/lib/time';
 import StatusBadge from './StatusBadge';
 import { TodayAttendance } from '@/types/attendance';
 

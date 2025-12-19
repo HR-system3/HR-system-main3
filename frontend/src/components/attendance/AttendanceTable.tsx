@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { AttendanceRecord } from '@/types/attendance';
-import { formatDate, formatTime, calculateWorkingHours } from '@/lib/utils/time';
+import { formatDate, formatTime, calculateWorkingHours } from '@/lib/time';
 import StatusBadge from './StatusBadge';
 
 interface AttendanceTableProps {

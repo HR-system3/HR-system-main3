@@ -5,7 +5,7 @@ import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import Sidebar from '@/components/layout/Sidebar';
 import Header from '@/components/layout/Header';
 
-export default function EmployeeProfileLayout({
+export default function TimeManagementLayout({
   children,
 }: {
   children: React.ReactNode;

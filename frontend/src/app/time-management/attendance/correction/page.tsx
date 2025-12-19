@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { attendanceService, CorrectionRequest } from '@/services/api/attendance.service';
-import { getEmployeeId, getUserId } from '@/lib/utils/auth';
+import { getEmployeeId, getUserId } from '@/lib/auth';
 import toast from 'react-hot-toast';
 import { AttendanceRecord } from '@/types/attendance';
 
@@ -123,7 +123,7 @@ export default function CorrectionPage() {
     <div className="p-6 max-w-7xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Link href="/attendance" className="text-blue-600 hover:underline">
+          <Link href="/time-management/attendance" className="text-blue-600 hover:underline">
             ← Back
           </Link>
           <h1 className="text-3xl font-bold text-gray-900">Attendance Corrections</h1>

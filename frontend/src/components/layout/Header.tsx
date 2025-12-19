@@ -13,25 +13,33 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
-      <div>
-        <h1 className="text-xl font-semibold text-gray-900">HR Management System</h1>
+    <header className="top-nav">
+      <div className="top-nav-left">
+        <div className="top-nav-logo">HR</div>
+        <div>
+          <div className="top-nav-title">HR System</div>
+          <div className="top-nav-sub">Complete Management</div>
+        </div>
       </div>
-      <div className="flex items-center gap-4">
+      <div className="top-nav-right">
         {user && (
-          <div className="flex items-center gap-3">
-            <div className="text-right">
-              <p className="text-sm font-medium text-gray-900">{user.name}</p>
-              <p className="text-xs text-gray-500">{user.role}</p>
+          <>
+            <div className="flex items-center gap-2">
+              <div className="text-right">
+                <div style={{ color: 'var(--text-main)', fontSize: '13px', fontWeight: '500' }}>
+                  {user.name}
+                </div>
+                <div className="top-nav-sub">{user.role}</div>
+              </div>
+              <div className="nav-avatar">
+                {user.name.charAt(0).toUpperCase()}
+              </div>
             </div>
-            <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-medium">
-              {user.name.charAt(0).toUpperCase()}
-            </div>
-          </div>
+            <button onClick={handleLogout} className="btn-ghost" style={{ fontSize: '13px', padding: '6px 14px' }}>
+              Logout
+            </button>
+          </>
         )}
-        <Button variant="outline" size="sm" onClick={handleLogout}>
-          Logout
-        </Button>
       </div>
     </header>
   );

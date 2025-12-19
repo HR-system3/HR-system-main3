@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { cn } from '@/lib/utils/utils';
+import { cn } from '@/lib/utils';
 import { ROUTES } from '@/lib/constants';
 import { useAuth } from '@/hooks/useAuth';
 import { hasPermission } from '@/lib/rolePermissions';
@@ -55,6 +55,14 @@ const allNavItems: NavItemType[] = [
   { name: 'My Team', href: ROUTES.MY_TEAM, icon: '👥', permission: 'canViewManagerTeam' },
   { name: 'Profile', href: ROUTES.PROFILE, icon: '👤' },
 
+  // Time Management
+  { section: 'Time Management' },
+  { name: 'My Attendance', href: '/time-management/attendance', icon: '⏰' },
+  { name: 'Attendance History', href: '/time-management/attendance/history', icon: '📅' },
+  { name: 'Correction Requests', href: '/time-management/attendance/correction', icon: '✏️' },
+  { name: 'Manager Attendance', href: '/time-management/manager/attendance', icon: '👔', permission: 'canViewManagerTeam' },
+  { name: 'Approvals', href: '/time-management/manager/approvals', icon: '✅', permission: 'canViewManagerTeam' },
+  
   // System Admin
   { section: 'System Administration' },
   { name: 'Create Auth User', href: '/system-admin/users/create', icon: '🛠️', permission: 'canAssignRoles' },
@@ -119,20 +127,13 @@ export default function Navigation() {
   });
 
   return (
-    <nav className="h-full w-full bg-white border-r border-gray-200 p-4 overflow-y-auto">
-      <div className="mb-8">
-        <Link href="/" className="block">
-          <h1 className="text-2xl font-bold text-blue-600">HR System</h1>
-          <p className="text-sm text-gray-500">Complete Management</p>
-        </Link>
-      </div>
-
+    <nav className="h-full w-full p-4 overflow-y-auto" style={{ paddingTop: '60px' }}>
       <ul className="space-y-1">
         {navItems.map((item, index) => {
           if ('section' in item) {
             return (
               <li key={`section-${index}`} className="pt-4 pb-2 px-2">
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
                   {item.section}
                 </p>
               </li>
@@ -147,9 +148,25 @@ export default function Navigation() {
                 className={cn(
                   'flex items-center gap-3 px-4 py-2 rounded-lg transition-colors text-sm',
                   isActive
-                    ? 'bg-blue-50 text-blue-600 font-medium'
-                    : 'text-gray-700 hover:bg-gray-50'
+                    ? 'font-medium'
+                    : ''
                 )}
+                style={{
+                  color: isActive ? '#e5f0ff' : 'var(--text-muted)',
+                  background: isActive ? 'var(--accent-soft)' : 'transparent',
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.background = 'rgba(15, 23, 42, 0.6)';
+                    e.currentTarget.style.color = 'var(--text-main)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.color = 'var(--text-muted)';
+                  }
+                }}
               >
                 <span className="text-lg">{item.icon}</span>
                 <span>{item.name}</span>

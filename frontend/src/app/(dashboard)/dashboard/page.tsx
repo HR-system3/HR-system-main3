@@ -49,10 +49,10 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-600 mt-2">
+    <div>
+      <div className="card" style={{ marginBottom: '24px' }}>
+        <h1 className="card-title">Dashboard</h1>
+        <p className="card-subtitle text-muted">
           Overview of Organization Structure, Employee Profiles, and Performance
         </p>
       </div>
@@ -61,88 +61,146 @@ export default function DashboardPage() {
       {(hasPermission(user?.role || '', 'canViewDepartments') || 
         hasPermission(user?.role || '', 'canViewPositions') || 
         hasPermission(user?.role || '', 'canViewChangeRequests')) && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="metrics-grid" style={{ marginBottom: '24px' }}>
           {hasPermission(user?.role || '', 'canViewDepartments') && (
-            <Card className="hover:shadow-lg transition-shadow">
-              <Link href={ROUTES.DEPARTMENTS}>
-                <div className="text-center">
-                  <div className="text-5xl mb-2">🏢</div>
-                  <h3 className="text-2xl font-bold text-gray-900">{stats.departments}</h3>
-                  <p className="text-gray-600">Departments</p>
-                </div>
-              </Link>
-            </Card>
+            <Link href={ROUTES.DEPARTMENTS} style={{ textDecoration: 'none' }}>
+              <div className="metric-card">
+                <div style={{ fontSize: '32px', marginBottom: '8px', textAlign: 'center' }}>🏢</div>
+                <div className="metric-value" style={{ textAlign: 'center' }}>{stats.departments}</div>
+                <div className="metric-label" style={{ textAlign: 'center', marginTop: '4px' }}>Departments</div>
+              </div>
+            </Link>
           )}
 
           {hasPermission(user?.role || '', 'canViewPositions') && (
-            <Card className="hover:shadow-lg transition-shadow">
-              <Link href={ROUTES.POSITIONS}>
-                <div className="text-center">
-                  <div className="text-5xl mb-2">💼</div>
-                  <h3 className="text-2xl font-bold text-gray-900">{stats.positions}</h3>
-                  <p className="text-gray-600">Positions</p>
-                </div>
-              </Link>
-            </Card>
+            <Link href={ROUTES.POSITIONS} style={{ textDecoration: 'none' }}>
+              <div className="metric-card">
+                <div style={{ fontSize: '32px', marginBottom: '8px', textAlign: 'center' }}>💼</div>
+                <div className="metric-value" style={{ textAlign: 'center' }}>{stats.positions}</div>
+                <div className="metric-label" style={{ textAlign: 'center', marginTop: '4px' }}>Positions</div>
+              </div>
+            </Link>
           )}
 
           {hasPermission(user?.role || '', 'canViewChangeRequests') && (
-            <Card className="hover:shadow-lg transition-shadow">
-              <Link href={ROUTES.CHANGE_REQUESTS}>
-                <div className="text-center">
-                  <div className="text-5xl mb-2">📝</div>
-                  <h3 className="text-2xl font-bold text-yellow-600">{stats.pendingRequests}</h3>
-                  <p className="text-gray-600">Pending Requests</p>
-                </div>
-              </Link>
-            </Card>
+            <Link href={ROUTES.CHANGE_REQUESTS} style={{ textDecoration: 'none' }}>
+              <div className="metric-card">
+                <div style={{ fontSize: '32px', marginBottom: '8px', textAlign: 'center' }}>📝</div>
+                <div className="metric-value" style={{ textAlign: 'center', color: '#fbbf24' }}>{stats.pendingRequests}</div>
+                <div className="metric-label" style={{ textAlign: 'center', marginTop: '4px' }}>Pending Requests</div>
+              </div>
+            </Link>
           )}
         </div>
       )}
 
       {/* Three domain sections: Organization, Employee Profile, Performance */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
         {/* Organization Structure Section */}
         {(hasPermission(user?.role || '', 'canViewDepartments') || 
           hasPermission(user?.role || '', 'canViewPositions') || 
           hasPermission(user?.role || '', 'canViewOrgChart') || 
           hasPermission(user?.role || '', 'canViewChangeRequests')) && (
           <Card title="Organization Structure">
-            <div className="space-y-3">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {hasPermission(user?.role || '', 'canViewDepartments') && (
                 <Link
                   href={ROUTES.DEPARTMENTS}
-                  className="block p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+                  style={{
+                    display: 'block',
+                    padding: '12px',
+                    borderRadius: '12px',
+                    background: 'rgba(29, 155, 240, 0.1)',
+                    border: '1px solid rgba(29, 155, 240, 0.3)',
+                    textDecoration: 'none',
+                    transition: 'all var(--transition-fast)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(29, 155, 240, 0.2)';
+                    e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.5)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(29, 155, 240, 0.1)';
+                    e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.3)';
+                  }}
                 >
-                  <h4 className="font-medium text-blue-900">Manage Departments</h4>
-                  <p className="text-sm text-blue-700">Create and update departments</p>
+                  <h4 style={{ fontWeight: '500', color: '#60a5fa', marginBottom: '4px' }}>Manage Departments</h4>
+                  <p className="text-muted" style={{ fontSize: '12px' }}>Create and update departments</p>
                 </Link>
               )}
               {hasPermission(user?.role || '', 'canViewPositions') && (
                 <Link
                   href={ROUTES.POSITIONS}
-                  className="block p-3 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors"
+                  style={{
+                    display: 'block',
+                    padding: '12px',
+                    borderRadius: '12px',
+                    background: 'rgba(29, 155, 240, 0.1)',
+                    border: '1px solid rgba(29, 155, 240, 0.3)',
+                    textDecoration: 'none',
+                    transition: 'all var(--transition-fast)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(29, 155, 240, 0.2)';
+                    e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.5)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(29, 155, 240, 0.1)';
+                    e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.3)';
+                  }}
                 >
-                  <h4 className="font-medium text-indigo-900">Manage Positions</h4>
-                  <p className="text-sm text-indigo-700">Create, delimit, and deactivate positions</p>
+                  <h4 style={{ fontWeight: '500', color: '#60a5fa', marginBottom: '4px' }}>Manage Positions</h4>
+                  <p className="text-muted" style={{ fontSize: '12px' }}>Create, delimit, and deactivate positions</p>
                 </Link>
               )}
               {hasPermission(user?.role || '', 'canViewOrgChart') && (
                 <Link
                   href={ROUTES.ORG_CHART}
-                  className="block p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
+                  style={{
+                    display: 'block',
+                    padding: '12px',
+                    borderRadius: '12px',
+                    background: 'rgba(29, 155, 240, 0.1)',
+                    border: '1px solid rgba(29, 155, 240, 0.3)',
+                    textDecoration: 'none',
+                    transition: 'all var(--transition-fast)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(29, 155, 240, 0.2)';
+                    e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.5)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(29, 155, 240, 0.1)';
+                    e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.3)';
+                  }}
                 >
-                  <h4 className="font-medium text-green-900">View Org Chart</h4>
-                  <p className="text-sm text-green-700">Visualize hierarchy</p>
+                  <h4 style={{ fontWeight: '500', color: '#60a5fa', marginBottom: '4px' }}>View Org Chart</h4>
+                  <p className="text-muted" style={{ fontSize: '12px' }}>Visualize hierarchy</p>
                 </Link>
               )}
               {hasPermission(user?.role || '', 'canViewChangeRequests') && (
                 <Link
                   href={ROUTES.CHANGE_REQUESTS}
-                  className="block p-3 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition-colors"
+                  style={{
+                    display: 'block',
+                    padding: '12px',
+                    borderRadius: '12px',
+                    background: 'rgba(29, 155, 240, 0.1)',
+                    border: '1px solid rgba(29, 155, 240, 0.3)',
+                    textDecoration: 'none',
+                    transition: 'all var(--transition-fast)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(29, 155, 240, 0.2)';
+                    e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.5)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(29, 155, 240, 0.1)';
+                    e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.3)';
+                  }}
                 >
-                  <h4 className="font-medium text-yellow-900">Change Requests</h4>
-                  <p className="text-sm text-yellow-700">Submit and approve structural changes</p>
+                  <h4 style={{ fontWeight: '500', color: '#60a5fa', marginBottom: '4px' }}>Change Requests</h4>
+                  <p className="text-muted" style={{ fontSize: '12px' }}>Submit and approve structural changes</p>
                 </Link>
               )}
             </div>
@@ -155,41 +213,105 @@ export default function DashboardPage() {
           hasPermission(user?.role || '', 'canViewChangeRequests') || 
           hasPermission(user?.role || '', 'canViewManagerTeam')) && (
           <Card title="Employee Profile">
-            <div className="space-y-3">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {hasPermission(user?.role || '', 'canCreateEmployee') && (
                 <Link
                   href="/employee-profile/new"
-                  className="block p-3 bg-emerald-50 rounded-lg hover:bg-emerald-100 transition-colors"
+                  style={{
+                    display: 'block',
+                    padding: '12px',
+                    borderRadius: '12px',
+                    background: 'rgba(29, 155, 240, 0.1)',
+                    border: '1px solid rgba(29, 155, 240, 0.3)',
+                    textDecoration: 'none',
+                    transition: 'all var(--transition-fast)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(29, 155, 240, 0.2)';
+                    e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.5)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(29, 155, 240, 0.1)';
+                    e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.3)';
+                  }}
                 >
-                  <h4 className="font-medium text-emerald-900">Create Employee</h4>
-                  <p className="text-sm text-emerald-700">Create employee master record</p>
+                  <h4 style={{ fontWeight: '500', color: '#60a5fa', marginBottom: '4px' }}>Create Employee</h4>
+                  <p className="text-muted" style={{ fontSize: '12px' }}>Create employee master record</p>
                 </Link>
               )}
               {hasPermission(user?.role || '', 'canSearchEmployee') && (
                 <Link
                   href="/employee-profile/search-by-number"
-                  className="block p-3 bg-teal-50 rounded-lg hover:bg-teal-100 transition-colors"
+                  style={{
+                    display: 'block',
+                    padding: '12px',
+                    borderRadius: '12px',
+                    background: 'rgba(29, 155, 240, 0.1)',
+                    border: '1px solid rgba(29, 155, 240, 0.3)',
+                    textDecoration: 'none',
+                    transition: 'all var(--transition-fast)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(29, 155, 240, 0.2)';
+                    e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.5)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(29, 155, 240, 0.1)';
+                    e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.3)';
+                  }}
                 >
-                  <h4 className="font-medium text-teal-900">Search Employee</h4>
-                  <p className="text-sm text-teal-700">Find employees by number</p>
+                  <h4 style={{ fontWeight: '500', color: '#60a5fa', marginBottom: '4px' }}>Search Employee</h4>
+                  <p className="text-muted" style={{ fontSize: '12px' }}>Find employees by number</p>
                 </Link>
               )}
               {hasPermission(user?.role || '', 'canViewChangeRequests') && (
                 <Link
                   href="/employee-profile/change-requests"
-                  className="block p-3 bg-sky-50 rounded-lg hover:bg-sky-100 transition-colors"
+                  style={{
+                    display: 'block',
+                    padding: '12px',
+                    borderRadius: '12px',
+                    background: 'rgba(29, 155, 240, 0.1)',
+                    border: '1px solid rgba(29, 155, 240, 0.3)',
+                    textDecoration: 'none',
+                    transition: 'all var(--transition-fast)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(29, 155, 240, 0.2)';
+                    e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.5)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(29, 155, 240, 0.1)';
+                    e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.3)';
+                  }}
                 >
-                  <h4 className="font-medium text-sky-900">Profile Change Requests</h4>
-                  <p className="text-sm text-sky-700">Review profile update requests</p>
+                  <h4 style={{ fontWeight: '500', color: '#60a5fa', marginBottom: '4px' }}>Profile Change Requests</h4>
+                  <p className="text-muted" style={{ fontSize: '12px' }}>Review profile update requests</p>
                 </Link>
               )}
               {hasPermission(user?.role || '', 'canViewManagerTeam') && (
                 <Link
                   href="/employee-profile/manager-team-demo"
-                  className="block p-3 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors"
+                  style={{
+                    display: 'block',
+                    padding: '12px',
+                    borderRadius: '12px',
+                    background: 'rgba(29, 155, 240, 0.1)',
+                    border: '1px solid rgba(29, 155, 240, 0.3)',
+                    textDecoration: 'none',
+                    transition: 'all var(--transition-fast)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(29, 155, 240, 0.2)';
+                    e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.5)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(29, 155, 240, 0.1)';
+                    e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.3)';
+                  }}
                 >
-                  <h4 className="font-medium text-purple-900">Manager Team View</h4>
-                  <p className="text-sm text-purple-700">View your team's profiles</p>
+                  <h4 style={{ fontWeight: '500', color: '#60a5fa', marginBottom: '4px' }}>Manager Team View</h4>
+                  <p className="text-muted" style={{ fontSize: '12px' }}>View your team's profiles</p>
                 </Link>
               )}
             </div>
@@ -202,46 +324,236 @@ export default function DashboardPage() {
           hasPermission(user?.role || '', 'canViewRecords') || 
           hasPermission(user?.role || '', 'canViewDisputes')) && (
           <Card title="Performance Management">
-            <div className="space-y-3">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {hasPermission(user?.role || '', 'canViewTemplates') && (
                 <Link
                   href="/performance/templates"
-                  className="block p-3 bg-pink-50 rounded-lg hover:bg-pink-100 transition-colors"
+                  style={{
+                    display: 'block',
+                    padding: '12px',
+                    borderRadius: '12px',
+                    background: 'rgba(29, 155, 240, 0.1)',
+                    border: '1px solid rgba(29, 155, 240, 0.3)',
+                    textDecoration: 'none',
+                    transition: 'all var(--transition-fast)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(29, 155, 240, 0.2)';
+                    e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.5)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(29, 155, 240, 0.1)';
+                    e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.3)';
+                  }}
                 >
-                  <h4 className="font-medium text-pink-900">Appraisal Templates</h4>
-                  <p className="text-sm text-pink-700">Define templates and criteria</p>
+                  <h4 style={{ fontWeight: '500', color: '#60a5fa', marginBottom: '4px' }}>Appraisal Templates</h4>
+                  <p className="text-muted" style={{ fontSize: '12px' }}>Define templates and criteria</p>
                 </Link>
               )}
               {hasPermission(user?.role || '', 'canViewCycles') && (
                 <Link
                   href="/performance/cycles"
-                  className="block p-3 bg-rose-50 rounded-lg hover:bg-rose-100 transition-colors"
+                  style={{
+                    display: 'block',
+                    padding: '12px',
+                    borderRadius: '12px',
+                    background: 'rgba(29, 155, 240, 0.1)',
+                    border: '1px solid rgba(29, 155, 240, 0.3)',
+                    textDecoration: 'none',
+                    transition: 'all var(--transition-fast)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(29, 155, 240, 0.2)';
+                    e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.5)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(29, 155, 240, 0.1)';
+                    e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.3)';
+                  }}
                 >
-                  <h4 className="font-medium text-rose-900">Appraisal Cycles</h4>
-                  <p className="text-sm text-rose-700">Plan and monitor cycles</p>
+                  <h4 style={{ fontWeight: '500', color: '#60a5fa', marginBottom: '4px' }}>Appraisal Cycles</h4>
+                  <p className="text-muted" style={{ fontSize: '12px' }}>Plan and monitor cycles</p>
                 </Link>
               )}
               {hasPermission(user?.role || '', 'canViewRecords') && (
                 <Link
                   href="/performance/records"
-                  className="block p-3 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors"
+                  style={{
+                    display: 'block',
+                    padding: '12px',
+                    borderRadius: '12px',
+                    background: 'rgba(29, 155, 240, 0.1)',
+                    border: '1px solid rgba(29, 155, 240, 0.3)',
+                    textDecoration: 'none',
+                    transition: 'all var(--transition-fast)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(29, 155, 240, 0.2)';
+                    e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.5)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(29, 155, 240, 0.1)';
+                    e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.3)';
+                  }}
                 >
-                  <h4 className="font-medium text-orange-900">Appraisal Records</h4>
-                  <p className="text-sm text-orange-700">Manager and employee appraisals</p>
+                  <h4 style={{ fontWeight: '500', color: '#60a5fa', marginBottom: '4px' }}>Appraisal Records</h4>
+                  <p className="text-muted" style={{ fontSize: '12px' }}>Manager and employee appraisals</p>
                 </Link>
               )}
               {hasPermission(user?.role || '', 'canViewDisputes') && (
                 <Link
                   href="/performance/disputes"
-                  className="block p-3 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
+                  style={{
+                    display: 'block',
+                    padding: '12px',
+                    borderRadius: '12px',
+                    background: 'rgba(29, 155, 240, 0.1)',
+                    border: '1px solid rgba(29, 155, 240, 0.3)',
+                    textDecoration: 'none',
+                    transition: 'all var(--transition-fast)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(29, 155, 240, 0.2)';
+                    e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.5)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(29, 155, 240, 0.1)';
+                    e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.3)';
+                  }}
                 >
-                  <h4 className="font-medium text-red-900">Disputes</h4>
-                  <p className="text-sm text-red-700">Track and resolve appraisal disputes</p>
+                  <h4 style={{ fontWeight: '500', color: '#60a5fa', marginBottom: '4px' }}>Disputes</h4>
+                  <p className="text-muted" style={{ fontSize: '12px' }}>Track and resolve appraisal disputes</p>
                 </Link>
               )}
             </div>
           </Card>
         )}
+
+        {/* Time Management Section */}
+        <Card title="Time Management">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <Link
+              href="/time-management/attendance"
+              style={{
+                display: 'block',
+                padding: '12px',
+                borderRadius: '12px',
+                background: 'rgba(29, 155, 240, 0.1)',
+                border: '1px solid rgba(29, 155, 240, 0.3)',
+                textDecoration: 'none',
+                transition: 'all var(--transition-fast)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(29, 155, 240, 0.2)';
+                e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.5)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(29, 155, 240, 0.1)';
+                e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.3)';
+              }}
+            >
+              <h4 style={{ fontWeight: '500', color: '#60a5fa', marginBottom: '4px' }}>My Attendance</h4>
+              <p className="text-muted" style={{ fontSize: '12px' }}>Clock in/out and view today's status</p>
+            </Link>
+            <Link
+              href="/time-management/attendance/history"
+              style={{
+                display: 'block',
+                padding: '12px',
+                borderRadius: '12px',
+                background: 'rgba(29, 155, 240, 0.1)',
+                border: '1px solid rgba(29, 155, 240, 0.3)',
+                textDecoration: 'none',
+                transition: 'all var(--transition-fast)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(29, 155, 240, 0.2)';
+                e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.5)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(29, 155, 240, 0.1)';
+                e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.3)';
+              }}
+            >
+              <h4 style={{ fontWeight: '500', color: '#60a5fa', marginBottom: '4px' }}>Attendance History</h4>
+              <p className="text-muted" style={{ fontSize: '12px' }}>View past attendance records</p>
+            </Link>
+            <Link
+              href="/time-management/attendance/correction"
+              style={{
+                display: 'block',
+                padding: '12px',
+                borderRadius: '12px',
+                background: 'rgba(29, 155, 240, 0.1)',
+                border: '1px solid rgba(29, 155, 240, 0.3)',
+                textDecoration: 'none',
+                transition: 'all var(--transition-fast)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(29, 155, 240, 0.2)';
+                e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.5)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(29, 155, 240, 0.1)';
+                e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.3)';
+              }}
+            >
+              <h4 style={{ fontWeight: '500', color: '#60a5fa', marginBottom: '4px' }}>Correction Requests</h4>
+              <p className="text-muted" style={{ fontSize: '12px' }}>Request corrections to attendance records</p>
+            </Link>
+            {(hasPermission(user?.role || '', 'canViewManagerTeam') || 
+              (user?.role && (user.role.toLowerCase().includes('manager') || user.role.toLowerCase().includes('hr') || user.role.toLowerCase().includes('admin')))) && (
+              <>
+                <Link
+                  href="/time-management/manager/attendance"
+                  style={{
+                    display: 'block',
+                    padding: '12px',
+                    borderRadius: '12px',
+                    background: 'rgba(29, 155, 240, 0.1)',
+                    border: '1px solid rgba(29, 155, 240, 0.3)',
+                    textDecoration: 'none',
+                    transition: 'all var(--transition-fast)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(29, 155, 240, 0.2)';
+                    e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.5)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(29, 155, 240, 0.1)';
+                    e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.3)';
+                  }}
+                >
+                  <h4 style={{ fontWeight: '500', color: '#60a5fa', marginBottom: '4px' }}>Manager Attendance</h4>
+                  <p className="text-muted" style={{ fontSize: '12px' }}>View team attendance</p>
+                </Link>
+                <Link
+                  href="/time-management/manager/approvals"
+                  style={{
+                    display: 'block',
+                    padding: '12px',
+                    borderRadius: '12px',
+                    background: 'rgba(29, 155, 240, 0.1)',
+                    border: '1px solid rgba(29, 155, 240, 0.3)',
+                    textDecoration: 'none',
+                    transition: 'all var(--transition-fast)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(29, 155, 240, 0.2)';
+                    e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.5)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(29, 155, 240, 0.1)';
+                    e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.3)';
+                  }}
+                >
+                  <h4 style={{ fontWeight: '500', color: '#60a5fa', marginBottom: '4px' }}>Approvals</h4>
+                  <p className="text-muted" style={{ fontSize: '12px' }}>Review correction requests</p>
+                </Link>
+              </>
+            )}
+          </div>
+        </Card>
       </div>
     </div>
   );

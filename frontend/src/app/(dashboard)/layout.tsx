@@ -12,11 +12,15 @@ export default function DashboardLayout({
 }) {
   return (
     <ProtectedRoute>
-      <div className="flex min-h-screen bg-gray-50">
+      <div className="app-shell">
         <Sidebar />
         <div className="flex-1 ml-64">
           <Header />
-          <main className="p-6">{children}</main>
+          <main className="app-main">
+            <div className="page">
+              <div className="page-inner">{children}</div>
+            </div>
+          </main>
         </div>
       </div>
     </ProtectedRoute>

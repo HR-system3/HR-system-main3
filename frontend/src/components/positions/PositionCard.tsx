@@ -4,7 +4,7 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import Card from '@/components/common/Card';
 import { Position } from '@/types/position.types';
-import { formatDate } from '@/lib/utils/utils';
+import { formatDate } from '@/lib/utils';
 
 interface PositionCardProps {
   position: Position;

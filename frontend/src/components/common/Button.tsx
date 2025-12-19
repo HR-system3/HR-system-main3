@@ -1,5 +1,5 @@
 import React from 'react';
-import { cn } from '@/lib/utils/utils';
+import { cn } from '@/lib/utils';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'danger' | 'outline';
@@ -17,25 +17,78 @@ export default function Button({
   className,
   ...props
 }: ButtonProps) {
-  const baseStyles = 'inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+  const baseStyles = 'inline-flex items-center justify-center font-medium transition-colors focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed';
   
-  const variants = {
-    primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500',
-    secondary: 'bg-gray-200 text-gray-900 hover:bg-gray-300 focus:ring-gray-500',
-    danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500',
-    outline: 'border-2 border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-gray-500',
+  const variantStyles: Record<string, React.CSSProperties> = {
+    primary: {
+      background: 'var(--accent)',
+      color: '#f9fafb',
+      borderRadius: '999px',
+      boxShadow: '0 12px 25px rgba(37, 99, 235, 0.4)',
+    },
+    secondary: {
+      background: 'rgba(15, 23, 42, 0.85)',
+      color: 'var(--text-main)',
+      borderRadius: '999px',
+      border: '1px solid var(--border-subtle)',
+    },
+    danger: {
+      background: 'var(--danger)',
+      color: '#f9fafb',
+      borderRadius: '999px',
+      boxShadow: '0 12px 25px rgba(239, 68, 68, 0.4)',
+    },
+    outline: {
+      background: 'transparent',
+      border: '1px solid var(--border-subtle)',
+      color: 'var(--text-main)',
+      borderRadius: '999px',
+    },
   };
 
   const sizes = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2 text-base',
-    lg: 'px-6 py-3 text-lg',
+    sm: { padding: '6px 14px', fontSize: '13px' },
+    md: { padding: '8px 18px', fontSize: '14px' },
+    lg: { padding: '10px 22px', fontSize: '16px' },
+  };
+
+  const buttonStyle: React.CSSProperties = {
+    ...variantStyles[variant],
+    ...sizes[size],
+    transition: 'all var(--transition-fast)',
   };
 
   return (
     <button
-      className={cn(baseStyles, variants[variant], sizes[size], className)}
+      className={cn(baseStyles, className)}
+      style={buttonStyle}
       disabled={disabled || isLoading}
+      onMouseEnter={(e) => {
+        if (!disabled && !isLoading) {
+          if (variant === 'primary') {
+            e.currentTarget.style.background = 'var(--accent-strong)';
+            e.currentTarget.style.transform = 'translateY(-1px)';
+            e.currentTarget.style.boxShadow = '0 18px 30px rgba(15, 118, 255, 0.55)';
+          } else if (variant === 'outline') {
+            e.currentTarget.style.background = 'rgba(15, 23, 42, 0.85)';
+          } else if (variant === 'secondary') {
+            e.currentTarget.style.background = 'rgba(15, 23, 42, 0.95)';
+          }
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (!disabled && !isLoading) {
+          e.currentTarget.style.transform = 'translateY(0)';
+          if (variant === 'primary') {
+            e.currentTarget.style.background = 'var(--accent)';
+            e.currentTarget.style.boxShadow = '0 12px 25px rgba(37, 99, 235, 0.4)';
+          } else if (variant === 'outline') {
+            e.currentTarget.style.background = 'transparent';
+          } else if (variant === 'secondary') {
+            e.currentTarget.style.background = 'rgba(15, 23, 42, 0.85)';
+          }
+        }
+      }}
       {...props}
     >
       {isLoading ? (

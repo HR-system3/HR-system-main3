@@ -11,9 +11,8 @@ import { payType, payTypeSchema } from './models/payType.schema';
 import { signingBonus, signingBonusSchema } from './models/signingBonus.schema';
 import { taxRules, taxRulesSchema } from './models/taxRules.schema';
 import { terminationAndResignationBenefits, terminationAndResignationBenefitsSchema } from './models/terminationAndResignationBenefits';
+import { payGrade } from './models/payGrades.schema';
 import { ApprovalModule } from './approval/approval.module'; // Ensure this is added if it was missing
-import { payGrade, payGradeSchema } from './models/payGrades.schema';
-
 
 @Module({
   imports: [
@@ -26,8 +25,7 @@ import { payGrade, payGradeSchema } from './models/payGrades.schema';
       { name: payrollPolicies.name, schema: payrollPoliciesSchema },
       { name: terminationAndResignationBenefits.name, schema: terminationAndResignationBenefitsSchema },
       { name: CompanyWideSettings.name, schema: CompanyWideSettingsSchema },
-      { name: payGrade.name, schema: payGradeSchema }
-
+      { name: payGrade.name, schema: payTypeSchema }
     ]),
     ApprovalModule,
   ],

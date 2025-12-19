@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { attendanceService } from '@/services/api/attendance.service';
 import { AttendanceRecord } from '@/types/attendance';
 import AttendanceTable from '@/components/attendance/AttendanceTable';
-import { isManager } from '@/lib/utils/auth';
+import { isManager } from '@/lib/auth';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 
@@ -19,7 +19,7 @@ export default function ManagerAttendancePage() {
     // Check if user is a manager
     if (!isManager()) {
       toast.error('Access denied. Manager role required.');
-      router.push('/attendance');
+      router.push('/time-management/attendance');
       return;
     }
 
@@ -59,14 +59,14 @@ export default function ManagerAttendancePage() {
     <div className="p-6 max-w-7xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Link href="/attendance" className="text-blue-600 hover:underline">
+          <Link href="/time-management/attendance" className="text-blue-600 hover:underline">
             ← Back
           </Link>
           <h1 className="text-3xl font-bold text-gray-900">Team Attendance</h1>
         </div>
         <div className="flex gap-4">
           <Link
-            href="/manager/approvals"
+            href="/time-management/manager/approvals"
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             View Approvals

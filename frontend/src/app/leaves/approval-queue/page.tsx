@@ -162,96 +162,101 @@ export default function ApprovalQueuePage() {
           <p className="text-gray-600 dark:text-gray-400">No pending requests</p>
         </div>
       ) : (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead className="bg-gray-50 dark:bg-gray-700">
+        <div className="overflow-x-auto rounded-xl border border-neutral-200 bg-white shadow-sm">
+          <table className="min-w-full text-sm">
+            <thead className="bg-neutral-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-700 uppercase tracking-wider border-b border-neutral-200">
                   Employee
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-700 uppercase tracking-wider border-b border-neutral-200">
                   Leave Type
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-700 uppercase tracking-wider border-b border-neutral-200">
                   Dates
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-700 uppercase tracking-wider border-b border-neutral-200">
                   Days
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-700 uppercase tracking-wider border-b border-neutral-200">
                   Escalation Timer
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-700 uppercase tracking-wider border-b border-neutral-200">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-              {requests.map((request) => {
+            <tbody>
+              {requests.map((request, index) => {
                 const escalation = getEscalationInfo(request);
                 return (
-                  <tr key={request._id} className={escalation.isOverdue ? "bg-red-50 dark:bg-red-900/10" : ""}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                  <tr 
+                    key={request._id} 
+                    className={`border-b border-neutral-200 transition-colors hover:bg-blue-50/40 ${
+                      escalation.isOverdue ? "bg-red-50" : index % 2 === 0 ? 'bg-white' : 'bg-neutral-50/60'
+                    }`}
+                  >
+                    <td className="px-4 py-3 text-neutral-900 font-medium">
                       {request.employeeId?.name || "N/A"}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                    <td className="px-4 py-3 text-neutral-900">
                       {request.leaveTypeId?.name || "N/A"}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                    <td className="px-4 py-3 text-neutral-900">
                       {new Date(request.startDate).toLocaleDateString()} - {new Date(request.endDate).toLocaleDateString()}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                    <td className="px-4 py-3 text-neutral-900">
                       {request.totalDays}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                    <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         {escalation.isOverdue ? (
-                          <span className="flex items-center gap-1 text-red-600 dark:text-red-400 font-medium">
+                          <span className="flex items-center gap-1 text-red-600 font-medium">
                             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                             </svg>
                             {formatTimeRemaining(escalation.hoursRemaining)}
                           </span>
                         ) : escalation.isUrgent ? (
-                          <span className="flex items-center gap-1 text-orange-600 dark:text-orange-400 font-medium">
+                          <span className="flex items-center gap-1 text-orange-600 font-medium">
                             <svg className="w-4 h-4 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                             </svg>
                             {formatTimeRemaining(escalation.hoursRemaining)}
                           </span>
                         ) : (
-                          <span className="text-gray-600 dark:text-gray-400">
+                          <span className="text-neutral-600">
                             {formatTimeRemaining(escalation.hoursRemaining)}
                           </span>
                         )}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                      <Link
-                        href={`/leaves/requests/${request._id}`}
-                        className="text-blue-600 hover:text-blue-900 dark:text-blue-400"
-                      >
-                        View
-                      </Link>
-                    <button
-                      onClick={() => {
-                        setSelectedRequest(request);
-                        if (request.employeeId?._id || request.employeeId) {
-                          fetchEmployeeBalance(request.employeeId._id || request.employeeId);
-                        }
-                      }}
-                      className="text-green-600 hover:text-green-900 dark:text-green-400"
-                    >
-                      Review
-                    </button>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        <Link
+                          href={`/leaves/requests/${request._id}`}
+                          className="text-blue-600 hover:text-blue-900 font-medium transition-colors"
+                        >
+                          View
+                        </Link>
+                        <button
+                          onClick={() => {
+                            setSelectedRequest(request);
+                            if (request.employeeId?._id || request.employeeId) {
+                              fetchEmployeeBalance(request.employeeId._id || request.employeeId);
+                            }
+                          }}
+                          className="text-green-600 hover:text-green-900 font-medium transition-colors"
+                        >
+                          Review
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );
               })}
             </tbody>
           </table>
-          </div>
         </div>
       )}
 

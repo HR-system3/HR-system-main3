@@ -285,59 +285,61 @@ export default function Navigation() {
   });
 
   return (
-    <nav className="h-full w-full p-4 overflow-y-auto" style={{ paddingTop: '60px' }}>
-      <ul className="space-y-2">
-        {navItems.map((item, index) => {
-          if ('section' in item) {
+    <nav className="h-full w-full overflow-y-auto">
+      {/* App Title Area */}
+      <div className="px-4 py-6 border-b border-neutral-200">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center text-white font-bold text-sm">
+            HR
+          </div>
+          <div>
+            <h1 className="text-sm font-semibold text-neutral-900">HR System</h1>
+            <p className="text-[11px] text-neutral-500">Human Resources</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Navigation Items */}
+      <div className="px-3 py-4">
+        <ul className="space-y-3">
+          {navItems.map((item, index) => {
+            if ('section' in item) {
+              return (
+                <li key={`section-${index}`} className="mt-6 mb-3 first:mt-0">
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 px-2">
+                    {item.section}
+                  </p>
+                </li>
+              );
+            }
+
+            const isActive = pathname === item.href || pathname?.startsWith(item.href + '/');
             return (
-              <li key={`section-${index}`} className="pt-6 pb-3 px-2">
-                <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
-                  {item.section}
-                </p>
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  className={cn(
+                    'block w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all',
+                    'border-2 no-underline hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2',
+                    isActive
+                      ? 'bg-blue-600 text-white border-blue-700 shadow-md'
+                      : 'bg-blue-50 text-blue-900 border-blue-200 hover:bg-blue-100 hover:border-blue-300 hover:shadow-sm'
+                  )}
+                  style={{ textDecoration: 'none' }}
+                >
+                  <span className={cn(
+                    'text-base flex-shrink-0',
+                    isActive ? 'opacity-100' : 'opacity-80'
+                  )}>
+                    {item.icon}
+                  </span>
+                  <span className="flex-1">{item.name}</span>
+                </Link>
               </li>
             );
-          }
-
-          const isActive = pathname === item.href || pathname?.startsWith(item.href + '/');
-          return (
-            <li key={item.href} className="mb-2">
-              <Link
-                href={item.href}
-                className={cn(
-                  'nav-item flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all text-sm',
-                  isActive
-                    ? 'font-medium nav-item-active'
-                    : 'nav-item-inactive'
-                )}
-                style={{
-                  color: isActive ? '#e5f0ff' : 'var(--text-muted)',
-                  background: isActive ? 'var(--accent-soft)' : 'rgba(15, 23, 42, 0.4)',
-                  border: isActive ? '1px solid rgba(56, 189, 248, 0.4)' : '1px solid rgba(255, 255, 255, 0.1)',
-                }}
-                onMouseEnter={(e) => {
-                  if (!isActive) {
-                    e.currentTarget.style.background = 'rgba(15, 23, 42, 0.75)';
-                    e.currentTarget.style.color = 'var(--text-main)';
-                    e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.3)';
-                    e.currentTarget.style.transform = 'translateX(2px)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!isActive) {
-                    e.currentTarget.style.background = 'rgba(15, 23, 42, 0.4)';
-                    e.currentTarget.style.color = 'var(--text-muted)';
-                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-                    e.currentTarget.style.transform = 'translateX(0)';
-                  }
-                }}
-              >
-                <span className="text-lg">{item.icon}</span>
-                <span>{item.name}</span>
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
+          })}
+        </ul>
+      </div>
     </nav>
   );
 }

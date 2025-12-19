@@ -24,18 +24,21 @@ export default function Header() {
       <div className="top-nav-right">
         {user && (
           <>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <div className="text-right">
-                <div style={{ color: 'var(--text-main)', fontSize: '13px', fontWeight: '500' }}>
+                <div className="text-sm font-medium text-neutral-900">
                   {user.name}
                 </div>
-                <div className="top-nav-sub">{user.role}</div>
+                <div className="text-xs text-neutral-500">{user.role}</div>
               </div>
               <div className="nav-avatar">
                 {user.name.charAt(0).toUpperCase()}
               </div>
             </div>
-            <button onClick={handleLogout} className="btn-ghost" style={{ fontSize: '13px', padding: '6px 14px' }}>
+            <button 
+              onClick={handleLogout} 
+              className="btn-ghost text-sm px-3 py-1.5"
+            >
               Logout
             </button>
           </>

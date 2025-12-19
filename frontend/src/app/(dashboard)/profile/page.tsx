@@ -102,7 +102,7 @@ export default function ProfilePage() {
       : '—';
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="w-full max-w-5xl mx-auto space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-gray-900">My Profile</h1>
         <p className="text-gray-600 mt-2">
@@ -292,37 +292,45 @@ export default function ProfilePage() {
           </div>
 
           {/* Account Information (from auth user) */}
-          <Card title="Account Information">
-            <dl className="divide-y divide-gray-200">
-              <div className="py-3 grid grid-cols-3 gap-4">
-                <dt className="text-sm font-medium text-gray-500">System Email</dt>
-                <dd className="text-sm text-gray-900 col-span-2">{user.email}</dd>
-              </div>
-              <div className="py-3 grid grid-cols-3 gap-4">
-                <dt className="text-sm font-medium text-gray-500">System Role</dt>
-                <dd className="text-sm text-gray-900 col-span-2">{user.role}</dd>
-              </div>
-            </dl>
-          </Card>
+          <div className="bg-blue-50 rounded-xl border border-blue-200 shadow-sm">
+            <div className="p-6">
+              <h3 className="text-lg font-semibold text-slate-800 mb-4">Account Information</h3>
+              <dl className="divide-y divide-blue-200">
+                <div className="py-3 grid grid-cols-3 gap-4">
+                  <dt className="text-sm font-medium text-slate-700">System Email</dt>
+                  <dd className="text-sm text-slate-800 col-span-2">{user.email}</dd>
+                </div>
+                <div className="py-3 grid grid-cols-3 gap-4">
+                  <dt className="text-sm font-medium text-slate-700">System Role</dt>
+                  <dd className="text-sm text-slate-800 col-span-2">{user.role}</dd>
+                </div>
+              </dl>
+            </div>
+          </div>
         </>
       ) : (
         // Fallback to basic account info if employee profile not found
-        <Card title="Account Information">
-          <dl className="divide-y divide-gray-200">
-            <div className="py-4 grid grid-cols-3 gap-4">
-              <dt className="text-sm font-medium text-gray-500">Name</dt>
-              <dd className="mt-1 text-sm text-gray-900 col-span-2">{user.name || '-'}</dd>
+        <div className="w-full max-w-4xl mx-auto">
+          <div className="bg-blue-50 rounded-xl border border-blue-200 shadow-sm">
+            <div className="p-6">
+              <h3 className="text-lg font-semibold text-slate-800 mb-4">Account Information</h3>
+              <dl className="divide-y divide-blue-200">
+                <div className="py-4 grid grid-cols-3 gap-4">
+                  <dt className="text-sm font-medium text-slate-700">Name</dt>
+                  <dd className="mt-1 text-sm text-slate-800 col-span-2">{user.name || '-'}</dd>
+                </div>
+                <div className="py-4 grid grid-cols-3 gap-4">
+                  <dt className="text-sm font-medium text-slate-700">Email</dt>
+                  <dd className="mt-1 text-sm text-slate-800 col-span-2">{user.email}</dd>
+                </div>
+                <div className="py-4 grid grid-cols-3 gap-4">
+                  <dt className="text-sm font-medium text-slate-700">Role</dt>
+                  <dd className="mt-1 text-sm text-slate-800 col-span-2">{user.role}</dd>
+                </div>
+              </dl>
             </div>
-            <div className="py-4 grid grid-cols-3 gap-4">
-              <dt className="text-sm font-medium text-gray-500">Email</dt>
-              <dd className="mt-1 text-sm text-gray-900 col-span-2">{user.email}</dd>
-            </div>
-            <div className="py-4 grid grid-cols-3 gap-4">
-              <dt className="text-sm font-medium text-gray-500">Role</dt>
-              <dd className="mt-1 text-sm text-gray-900 col-span-2">{user.role}</dd>
-            </div>
-          </dl>
-        </Card>
+          </div>
+        </div>
       )}
     </div>
   );

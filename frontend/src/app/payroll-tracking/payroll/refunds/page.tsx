@@ -58,50 +58,88 @@ export default function PayrollRefundsPage() {
 
   return (
     <div className="p-6">
-      <h1 className="text-xl font-bold mb-4">Payroll – Refunds</h1>
-
-      <div className="border p-4 mb-6">
-        <h2 className="font-semibold mb-2">Create Refund</h2>
-
-        <input
-          className="border p-2 w-full mb-2"
-          placeholder="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-
-        <input
-          type="number"
-          className="border p-2 w-full mb-2"
-          placeholder="Amount"
-          value={amount}
-          onChange={(e) => setAmount(Number(e.target.value))}
-        />
-
-        <button
-          onClick={createRefund}
-          className="bg-blue-600 text-white px-4 py-2 rounded"
-        >
-          Create Refund
-        </button>
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-neutral-900 mb-1">Payroll – Refunds</h1>
+        <p className="text-sm text-neutral-500">Manage employee refunds</p>
       </div>
 
-      {refunds.map((r) => (
-        <div key={r._id} className="border p-4 mb-3">
-          <p>{r.refundDetails.description}</p>
-          <p>Amount: {r.refundDetails.amount}</p>
-          <p>Status: {r.status}</p>
-
-          {r.status === "pending" && (
-            <button
-              onClick={() => markPaid(r._id)}
-              className="bg-green-600 text-white px-3 py-1 rounded mt-2"
-            >
-              Mark as Paid
-            </button>
-          )}
+      <div className="rounded-xl border border-neutral-200 bg-white shadow-sm p-6 mb-6">
+        <h2 className="text-lg font-semibold text-neutral-900 mb-4">Create Refund</h2>
+        <div className="space-y-4">
+          <input
+            className="w-full rounded-lg border border-neutral-300 px-4 py-2 text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            placeholder="Description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+          <input
+            type="number"
+            className="w-full rounded-lg border border-neutral-300 px-4 py-2 text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            placeholder="Amount"
+            value={amount}
+            onChange={(e) => setAmount(Number(e.target.value))}
+          />
+          <button
+            onClick={createRefund}
+            className="bg-blue-600 text-white hover:bg-blue-700 rounded-lg px-4 py-2 font-semibold shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+          >
+            Create Refund
+          </button>
         </div>
-      ))}
+      </div>
+
+      <div className="overflow-x-auto rounded-xl border border-neutral-200 bg-white shadow-sm">
+        <table className="min-w-full text-sm">
+          <thead className="bg-neutral-50">
+            <tr>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-700 uppercase tracking-wider border-b border-neutral-200">Description</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-700 uppercase tracking-wider border-b border-neutral-200">Amount</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-700 uppercase tracking-wider border-b border-neutral-200">Status</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-neutral-700 uppercase tracking-wider border-b border-neutral-200">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {refunds.length === 0 ? (
+              <tr>
+                <td colSpan={4} className="text-center py-12 text-neutral-500">
+                  <p className="text-sm">No refunds found</p>
+                </td>
+              </tr>
+            ) : (
+              refunds.map((r, index) => (
+                <tr 
+                  key={r._id} 
+                  className={`border-b border-neutral-200 transition-colors hover:bg-blue-50/40 ${
+                    index % 2 === 0 ? 'bg-white' : 'bg-neutral-50/60'
+                  }`}
+                >
+                  <td className="px-4 py-3 text-neutral-900">{r.refundDetails.description}</td>
+                  <td className="px-4 py-3 text-neutral-900">${r.refundDetails.amount?.toFixed(2) || '0.00'}</td>
+                  <td className="px-4 py-3">
+                    <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ${
+                      r.status === 'paid' ? 'bg-green-100 text-green-800' :
+                      r.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                      'bg-yellow-100 text-yellow-800'
+                    }`}>
+                      {r.status}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3">
+                    {r.status === "pending" && (
+                      <button
+                        onClick={() => markPaid(r._id)}
+                        className="bg-green-600 text-white hover:bg-green-700 rounded-md px-3 py-1.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
+                      >
+                        Mark as Paid
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

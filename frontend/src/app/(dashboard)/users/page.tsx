@@ -92,7 +92,7 @@ export default function UsersPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="w-full max-w-5xl mx-auto">
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
@@ -130,91 +130,83 @@ export default function UsersPage() {
           </div>
         </Card>
       ) : (
-        <Card>
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Name
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Email
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Role
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Created
-                  </th>
-                  <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {filteredUsers.map((u) => (
-                  <tr key={u._id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 text-sm font-medium text-gray-900">
-                      {u.name}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-500">{u.email}</td>
-                    <td className="px-4 py-3 text-sm text-gray-500">{u.role}</td>
-                    <td className="px-4 py-3">
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          u.isActive
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-red-100 text-red-800'
-                        }`}
-                      >
-                        {u.isActive ? 'Active' : 'Inactive'}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-500">
-                      {u.createdAt ? formatDateTime(u.createdAt) : '—'}
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => router.push(`/users/${u._id}`)}
-                        >
-                          View / Edit
-                        </Button>
-                        {isSystemAdmin && (
-                          <>
-                            {u.isActive ? (
-                              <Button
-                                variant="danger"
-                                size="sm"
-                                onClick={() => handleDeactivate(u._id)}
-                              >
-                                Deactivate
-                              </Button>
-                            ) : (
-                              <Button
-                                variant="primary"
-                                size="sm"
-                                onClick={() => handleActivate(u._id)}
-                              >
-                                Activate
-                              </Button>
+        <div className="w-full max-w-5xl mx-auto">
+          <Card>
+            <div className="overflow-x-auto">
+              <div className="app-table-blue-wrapper">
+                <table className="app-table-blue min-w-full">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Role</th>
+                      <th>Status</th>
+                      <th>Created</th>
+                      <th className="text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredUsers.map((u) => (
+                      <tr key={u._id}>
+                        <td className="text-sm font-medium text-blue-900">
+                          {u.name}
+                        </td>
+                        <td className="text-sm text-blue-800">{u.email}</td>
+                        <td className="text-sm text-blue-800">{u.role}</td>
+                        <td>
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              u.isActive
+                                ? 'bg-green-100 text-green-800'
+                                : 'bg-red-100 text-red-800'
+                            }`}
+                          >
+                            {u.isActive ? 'Active' : 'Inactive'}
+                          </span>
+                        </td>
+                        <td className="text-sm text-blue-800">
+                          {u.createdAt ? formatDateTime(u.createdAt) : '—'}
+                        </td>
+                        <td className="text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => router.push(`/users/${u._id}`)}
+                            >
+                              View / Edit
+                            </Button>
+                            {isSystemAdmin && (
+                              <>
+                                {u.isActive ? (
+                                  <Button
+                                    variant="danger"
+                                    size="sm"
+                                    onClick={() => handleDeactivate(u._id)}
+                                  >
+                                    Deactivate
+                                  </Button>
+                                ) : (
+                                  <Button
+                                    variant="primary"
+                                    size="sm"
+                                    onClick={() => handleActivate(u._id)}
+                                  >
+                                    Activate
+                                  </Button>
+                                )}
+                              </>
                             )}
-                          </>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </Card>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </Card>
+        </div>
       )}
     </div>
   );

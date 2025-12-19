@@ -72,7 +72,7 @@ export default function MyTeamPage() {
   const isDepartmentHead = normalizedRole === 'department head';
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="w-full max-w-5xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">My Team</h1>
@@ -109,104 +109,96 @@ export default function MyTeamPage() {
         </Card>
       ) : (
         <>
-          <Card title="Team Members">
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Employee
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Employee Number
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Position
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Department
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {teamMembers.map((member) => {
-                    // Handle populated position and department data
-                    const position =
-                      typeof member.primaryPositionId === 'object' &&
-                      member.primaryPositionId !== null
-                        ? (member.primaryPositionId as any)
-                        : null;
-                    const department =
-                      typeof member.primaryDepartmentId === 'object' &&
-                      member.primaryDepartmentId !== null
-                        ? (member.primaryDepartmentId as any)
-                        : null;
-
-                    const positionTitle = position?.title || '—';
-                    const departmentName = department?.name || '—';
-
-                    return (
-                      <tr
-                        key={member._id}
-                        className="hover:bg-gray-50 cursor-pointer"
-                        onClick={() =>
-                          router.push(`/employee-profile/${member._id}`)
-                        }
-                      >
-                        <td className="px-4 py-3">
-                          <Link
-                            href={`/employee-profile/${member._id}`}
-                            className="flex items-center gap-3"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <Avatar
-                              name={`${member.firstName} ${member.lastName}`}
-                              size={40}
-                            />
-                            <div>
-                              <div className="text-sm font-medium text-gray-900">
-                                {member.firstName} {member.lastName}
-                              </div>
-                            </div>
-                          </Link>
-                        </td>
-                        <td className="px-4 py-3 text-sm text-gray-900">
-                          {member.employeeNumber}
-                        </td>
-                        <td className="px-4 py-3 text-sm text-gray-500">
-                          {positionTitle}
-                        </td>
-                        <td className="px-4 py-3 text-sm text-gray-500">
-                          {departmentName}
-                        </td>
-                        <td className="px-4 py-3">
-                          <StatusBadge kind="employee" value={member.status} />
-                        </td>
-                        <td className="px-4 py-3 text-right">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              router.push(`/employee-profile/${member._id}`);
-                            }}
-                          >
-                            View
-                          </Button>
-                        </td>
+          <div className="w-full max-w-5xl mx-auto">
+            <Card title="Team Members">
+              <div className="overflow-x-auto">
+                <div className="app-table-blue-wrapper">
+                  <table className="app-table-blue min-w-full">
+                    <thead>
+                      <tr>
+                        <th>Employee</th>
+                        <th>Employee Number</th>
+                        <th>Position</th>
+                        <th>Department</th>
+                        <th>Status</th>
+                        <th className="text-right">Actions</th>
                       </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </Card>
+                    </thead>
+                    <tbody>
+                      {teamMembers.map((member) => {
+                        // Handle populated position and department data
+                        const position =
+                          typeof member.primaryPositionId === 'object' &&
+                          member.primaryPositionId !== null
+                            ? (member.primaryPositionId as any)
+                            : null;
+                        const department =
+                          typeof member.primaryDepartmentId === 'object' &&
+                          member.primaryDepartmentId !== null
+                            ? (member.primaryDepartmentId as any)
+                            : null;
+
+                        const positionTitle = position?.title || '—';
+                        const departmentName = department?.name || '—';
+
+                        return (
+                          <tr
+                            key={member._id}
+                            className="cursor-pointer"
+                            onClick={() =>
+                              router.push(`/employee-profile/${member._id}`)
+                            }
+                          >
+                            <td>
+                              <Link
+                                href={`/employee-profile/${member._id}`}
+                                className="flex items-center gap-3"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <Avatar
+                                  name={`${member.firstName} ${member.lastName}`}
+                                  size={40}
+                                />
+                                <div>
+                                  <div className="text-sm font-medium text-blue-900">
+                                    {member.firstName} {member.lastName}
+                                  </div>
+                                </div>
+                              </Link>
+                            </td>
+                            <td className="text-sm text-blue-900">
+                              {member.employeeNumber}
+                            </td>
+                            <td className="text-sm text-blue-800">
+                              {positionTitle}
+                            </td>
+                            <td className="text-sm text-blue-800">
+                              {departmentName}
+                            </td>
+                            <td>
+                              <StatusBadge kind="employee" value={member.status} />
+                            </td>
+                            <td className="text-right">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  router.push(`/employee-profile/${member._id}`);
+                                }}
+                              >
+                                View
+                              </Button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </Card>
+          </div>
 
           <Card title="Team Overview">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

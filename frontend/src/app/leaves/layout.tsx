@@ -14,7 +14,7 @@ export default function LeavesLayout({
     <ProtectedRoute>
       <div className="app-shell">
         <Sidebar />
-        <div className="flex-1 ml-64">
+        <div className="flex-1 ml-[280px]">
           <Header />
           <main className="app-main">
             <div className="page">

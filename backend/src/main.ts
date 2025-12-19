@@ -24,6 +24,7 @@ async function bootstrap() {
 
   // ✅ CORS (safe for dev + Vercel + Render)
   const allowedOrigins = [
+    'http://localhost:5001',
     'http://localhost:3000',
     'http://localhost:3001',
     process.env.FRONTEND_URL, // e.g. https://emp-org-perf3.vercel.app
@@ -57,6 +58,6 @@ async function bootstrap() {
   });
 
   const port = process.env.PORT || 3000;
-  await app.listen(port, '0.0.0.0'); // ✅ REQUIRED for Render
+  await app.listen(process.env.PORT || 5001); // ✅ REQUIRED for Render
 }
 bootstrap();

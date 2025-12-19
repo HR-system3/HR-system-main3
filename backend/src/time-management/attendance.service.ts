@@ -122,6 +122,103 @@ export class AttendanceService {
   }
 
   /**
+   * Helper to transform correction document to frontend-expected shape
+   */
+  private toCorrectionResponse(c: any): {
+    _id: string;
+    employeeId: string;
+    attendanceRecordId: string;
+    reason?: string;
+    status: 'SUBMITTED' | 'IN_REVIEW' | 'APPROVED' | 'REJECTED' | 'ESCALATED';
+    createdAt: string;
+    updatedAt: string;
+  } {
+    const doc = c.toObject ? c.toObject() : c;
+    const attendanceRecordId = doc.attendanceRecord?._id 
+      ? doc.attendanceRecord._id.toString()
+      : (doc.attendanceRecord?.toString() || doc.attendanceRecord);
+    
+    return {
+      _id: doc._id.toString(),
+      employeeId: doc.employeeId?.toString() || doc.employeeId,
+      attendanceRecordId: attendanceRecordId.toString(),
+      reason: doc.reason,
+      status: doc.status as 'SUBMITTED' | 'IN_REVIEW' | 'APPROVED' | 'REJECTED' | 'ESCALATED',
+      createdAt: doc.createdAt ? new Date(doc.createdAt).toISOString() : new Date().toISOString(),
+      updatedAt: doc.updatedAt ? new Date(doc.updatedAt).toISOString() : new Date().toISOString(),
+    };
+  }
+
+  /**
+   * Get corrections for a specific employee
+   */
+  async getCorrectionsForEmployee(employeeId: string) {
+    if (!employeeId) {
+      throw new BadRequestException('employeeId is required');
+    }
+
+    if (!Types.ObjectId.isValid(employeeId)) {
+      throw new BadRequestException('Invalid employeeId format');
+    }
+
+    // Validate employeeId format (existence check via attendance records)
+    const hasRecords = await this.attendanceModel.exists({
+      employeeId: new Types.ObjectId(employeeId),
+    });
+    if (!hasRecords) {
+      throw new BadRequestException('Employee not found or has no attendance records');
+    }
+
+    const corrections = await this.correctionModel
+      .find({ employeeId: new Types.ObjectId(employeeId) })
+      .sort({ _id: -1 }) // newest first
+      .lean();
+
+    return corrections.map((c) => this.toCorrectionResponse(c));
+  }
+
+  /**
+   * Get pending corrections (SUBMITTED or IN_REVIEW)
+   */
+  async getPendingCorrections() {
+    const corrections = await this.correctionModel
+      .find({
+        status: { $in: [CorrectionRequestStatus.SUBMITTED, CorrectionRequestStatus.IN_REVIEW] },
+      })
+      .sort({ _id: -1 }) // newest first
+      .lean();
+
+    return corrections.map((c) => this.toCorrectionResponse(c));
+  }
+
+  /**
+   * Get team attendance records
+   */
+  async getTeamAttendance({ departmentId, fromDate, toDate }: {
+    departmentId?: string;
+    fromDate?: string;
+    toDate?: string;
+  }) {
+    if (!fromDate || !toDate) {
+      throw new BadRequestException('fromDate and toDate are required');
+    }
+
+    const filter: any = {};
+    
+    // Filter by date range using punches.time
+    const dateFilter: any = {};
+    if (fromDate) dateFilter.$gte = new Date(fromDate);
+    if (toDate) dateFilter.$lte = new Date(toDate);
+    filter['punches.time'] = dateFilter;
+
+    // Note: departmentId filtering is skipped as requested (to avoid empty results)
+    // If departmentId filtering is needed later, it would require joining with EmployeeProfile
+
+    const records = await this.attendanceModel.find(filter).lean();
+    return records;
+  }
+
+  /**
    * Employee submits attendance correction request
    */
   async createCorrection(dto: CreateCorrectionRequestDto) {
@@ -141,7 +238,7 @@ export class AttendanceService {
       status: CorrectionRequestStatus.SUBMITTED,
     });
 
-    return created;
+    return this.toCorrectionResponse(created);
   }
 
   /**
@@ -162,6 +259,6 @@ export class AttendanceService {
 
     // If approved, you might manually adjust punches in the record later.
     // For MS2, we only update status and keep it simple.
-    return correction;
+    return this.toCorrectionResponse(correction);
   }
 }

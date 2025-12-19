@@ -25,6 +25,26 @@ export class AttendanceController {
     return this.attendanceService.getAttendance(query);
   }
 
+  // Specific routes must come before parameterized routes
+  @Get('corrections/pending')
+  getPendingCorrections() {
+    return this.attendanceService.getPendingCorrections();
+  }
+
+  @Get('corrections')
+  getCorrectionsForEmployee(@Query('employeeId') employeeId: string) {
+    return this.attendanceService.getCorrectionsForEmployee(employeeId);
+  }
+
+  @Get('team')
+  getTeamAttendance(
+    @Query('departmentId') departmentId?: string,
+    @Query('fromDate') fromDate?: string,
+    @Query('toDate') toDate?: string,
+  ) {
+    return this.attendanceService.getTeamAttendance({ departmentId, fromDate, toDate });
+  }
+
   @Post('corrections')
   createCorrection(@Body() dto: CreateCorrectionRequestDto) {
     return this.attendanceService.createCorrection(dto);

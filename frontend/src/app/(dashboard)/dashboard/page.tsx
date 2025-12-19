@@ -554,6 +554,107 @@ export default function DashboardPage() {
             )}
           </div>
         </Card>
+
+        {/* Payroll Configuration Section */}
+        {(hasPermission(user?.role || '', 'canAssignRoles') || 
+          (user?.role && (user.role.toLowerCase().includes('admin') || user.role.toLowerCase().includes('hr') || user.role.toLowerCase().includes('payroll')))) && (
+          <Card title="Payroll Configuration">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <Link
+                href="/payroll-configuration/company-settings"
+                style={{
+                  display: 'block',
+                  padding: '12px',
+                  borderRadius: '12px',
+                  background: 'rgba(29, 155, 240, 0.1)',
+                  border: '1px solid rgba(29, 155, 240, 0.3)',
+                  textDecoration: 'none',
+                  transition: 'all var(--transition-fast)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(29, 155, 240, 0.2)';
+                  e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.5)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgba(29, 155, 240, 0.1)';
+                  e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.3)';
+                }}
+              >
+                <h4 style={{ fontWeight: '500', color: '#60a5fa', marginBottom: '4px' }}>Company Settings</h4>
+                <p className="text-muted" style={{ fontSize: '12px' }}>Configure default payroll settings</p>
+              </Link>
+              <Link
+                href="/payroll-configuration/paygrades"
+                style={{
+                  display: 'block',
+                  padding: '12px',
+                  borderRadius: '12px',
+                  background: 'rgba(29, 155, 240, 0.1)',
+                  border: '1px solid rgba(29, 155, 240, 0.3)',
+                  textDecoration: 'none',
+                  transition: 'all var(--transition-fast)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(29, 155, 240, 0.2)';
+                  e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.5)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgba(29, 155, 240, 0.1)';
+                  e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.3)';
+                }}
+              >
+                <h4 style={{ fontWeight: '500', color: '#60a5fa', marginBottom: '4px' }}>Pay Grades</h4>
+                <p className="text-muted" style={{ fontSize: '12px' }}>Manage pay grade structures</p>
+              </Link>
+              <Link
+                href="/payroll-configuration/pay-types"
+                style={{
+                  display: 'block',
+                  padding: '12px',
+                  borderRadius: '12px',
+                  background: 'rgba(29, 155, 240, 0.1)',
+                  border: '1px solid rgba(29, 155, 240, 0.3)',
+                  textDecoration: 'none',
+                  transition: 'all var(--transition-fast)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(29, 155, 240, 0.2)';
+                  e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.5)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgba(29, 155, 240, 0.1)';
+                  e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.3)';
+                }}
+              >
+                <h4 style={{ fontWeight: '500', color: '#60a5fa', marginBottom: '4px' }}>Pay Types</h4>
+                <p className="text-muted" style={{ fontSize: '12px' }}>Configure payment types</p>
+              </Link>
+              <Link
+                href="/payroll-configuration/approvals"
+                style={{
+                  display: 'block',
+                  padding: '12px',
+                  borderRadius: '12px',
+                  background: 'rgba(29, 155, 240, 0.1)',
+                  border: '1px solid rgba(29, 155, 240, 0.3)',
+                  textDecoration: 'none',
+                  transition: 'all var(--transition-fast)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(29, 155, 240, 0.2)';
+                  e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.5)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgba(29, 155, 240, 0.1)';
+                  e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.3)';
+                }}
+              >
+                <h4 style={{ fontWeight: '500', color: '#60a5fa', marginBottom: '4px' }}>Approvals</h4>
+                <p className="text-muted" style={{ fontSize: '12px' }}>Review payroll configuration approvals</p>
+              </Link>
+            </div>
+          </Card>
+        )}
       </div>
     </div>
   );

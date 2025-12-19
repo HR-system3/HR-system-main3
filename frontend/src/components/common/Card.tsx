@@ -4,10 +4,11 @@ interface CardProps {
   children: React.ReactNode;
   className?: string;
   title?: string;
+  description?: string;
   onClick?: () => void;
 }
 
-export default function Card({ children, className = '', title, onClick }: CardProps) {
+export default function Card({ children, className = '', title, description, onClick }: CardProps) {
   return (
     <div
       className={`card ${onClick ? 'cursor-pointer' : ''} ${className}`}
@@ -31,6 +32,11 @@ export default function Card({ children, className = '', title, onClick }: CardP
       {title && (
         <div style={{ marginBottom: '16px', paddingBottom: '16px', borderBottom: '1px solid var(--border-subtle)' }}>
           <h3 className="card-title">{title}</h3>
+          {description && (
+            <p className="card-subtitle text-muted" style={{ marginTop: '4px' }}>
+              {description}
+            </p>
+          )}
         </div>
       )}
       <div>{children}</div>

@@ -63,6 +63,18 @@ const allNavItems: NavItemType[] = [
   { name: 'Manager Attendance', href: '/time-management/manager/attendance', icon: '👔', permission: 'canViewManagerTeam' },
   { name: 'Approvals', href: '/time-management/manager/approvals', icon: '✅', permission: 'canViewManagerTeam' },
   
+  // Payroll Configuration
+  { section: 'Payroll Configuration' },
+  { name: 'Company Settings', href: '/payroll-configuration/company-settings', icon: '⚙️' },
+  { name: 'Pay Grades', href: '/payroll-configuration/paygrades', icon: '💰' },
+  { name: 'Pay Types', href: '/payroll-configuration/pay-types', icon: '💵' },
+  { name: 'Allowances', href: '/payroll-configuration/allowances', icon: '🎁' },
+  { name: 'Signing Bonus', href: '/payroll-configuration/signing-bonus', icon: '🎉' },
+  { name: 'Insurance', href: '/payroll-configuration/insurance', icon: '🛡️' },
+  { name: 'Taxes', href: '/payroll-configuration/taxes', icon: '📊' },
+  { name: 'Termination Benefits', href: '/payroll-configuration/termination-benefits', icon: '👋' },
+  { name: 'Approvals', href: '/payroll-configuration/approvals', icon: '✅' },
+  
   // System Admin
   { section: 'System Administration' },
   { name: 'Create Auth User', href: '/system-admin/users/create', icon: '🛠️', permission: 'canAssignRoles' },
@@ -106,6 +118,21 @@ export default function Navigation() {
       if (item.href === ROUTES.PERFORMANCE_DISPUTES) {
         return performanceFeatureAccess.canViewDisputes(user.role);
       }
+    }
+    
+    // Special handling for Payroll Configuration items
+    if (item.href.startsWith('/payroll-configuration/')) {
+      if (!user?.role) {
+        return false;
+      }
+      // Show payroll pages to HR, Admin, Payroll roles
+      const roleLower = user.role.toLowerCase();
+      return (
+        roleLower.includes('admin') ||
+        roleLower.includes('hr') ||
+        roleLower.includes('payroll') ||
+        roleLower === 'system admin'
+      );
     }
     
     // Check if user has the required permission for other items

@@ -1,8 +1,8 @@
 export enum ConfigStatus {
-    DRAFT = 'draft',
-    PENDING_MANAGER_APPROVAL = 'pending_manager_approval',
-    APPROVED = 'approved',
-    REJECTED = 'rejected'
+    DRAFT = 'DRAFT',
+    PENDING_MANAGER_APPROVAL = 'PENDING_MANAGER_APPROVAL',
+    APPROVED = 'APPROVED',
+    REJECTED = 'REJECTED'
 }
 
 export enum PolicyType {

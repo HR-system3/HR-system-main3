@@ -2,7 +2,7 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'danger' | 'outline';
+  variant?: 'primary' | 'secondary' | 'danger' | 'outline' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
   isLoading?: boolean;
   children: React.ReactNode;
@@ -44,6 +44,12 @@ export default function Button({
       color: 'var(--text-main)',
       borderRadius: '999px',
     },
+    ghost: {
+      background: 'transparent',
+      border: 'none',
+      color: 'var(--text-main)',
+      borderRadius: '999px',
+    },
   };
 
   const sizes = {
@@ -73,6 +79,12 @@ export default function Button({
             e.currentTarget.style.background = 'rgba(15, 23, 42, 0.85)';
           } else if (variant === 'secondary') {
             e.currentTarget.style.background = 'rgba(15, 23, 42, 0.95)';
+          } else if (variant === 'ghost') {
+            e.currentTarget.style.background = 'rgba(15, 23, 42, 0.6)';
+          } else if (variant === 'danger') {
+            e.currentTarget.style.background = '#dc2626';
+            e.currentTarget.style.transform = 'translateY(-1px)';
+            e.currentTarget.style.boxShadow = '0 18px 30px rgba(239, 68, 68, 0.55)';
           }
         }
       }}
@@ -86,6 +98,11 @@ export default function Button({
             e.currentTarget.style.background = 'transparent';
           } else if (variant === 'secondary') {
             e.currentTarget.style.background = 'rgba(15, 23, 42, 0.85)';
+          } else if (variant === 'ghost') {
+            e.currentTarget.style.background = 'transparent';
+          } else if (variant === 'danger') {
+            e.currentTarget.style.background = 'var(--danger)';
+            e.currentTarget.style.boxShadow = '0 12px 25px rgba(239, 68, 68, 0.4)';
           }
         }
       }}

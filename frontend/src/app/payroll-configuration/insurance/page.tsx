@@ -206,12 +206,12 @@ export default function InsurancePage() {
           {brackets.map((b) => (
             <tr key={b._id}>
               <td className="border p-2">{b.name}</td>
-              <td className="border p-2">{b.amount.toLocaleString()}</td>
+              <td className="border p-2">{(b.amount ?? 0).toLocaleString()}</td>
               <td className="border p-2">
-                {b.minSalary.toLocaleString()} - {b.maxSalary.toLocaleString()}
+                {(b.minSalary ?? 0).toLocaleString()} - {(b.maxSalary ?? 0).toLocaleString()}
               </td>
-              <td className="border p-2">{b.employeeRate}%</td>
-              <td className="border p-2">{b.employerRate}%</td>
+              <td className="border p-2">{b.employeeRate ?? 0}%</td>
+              <td className="border p-2">{b.employerRate ?? 0}%</td>
               <td className="border p-2">{b.status}</td>
               <td className="border p-2 text-center">
                 <button

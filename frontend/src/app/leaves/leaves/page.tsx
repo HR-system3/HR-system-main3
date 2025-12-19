@@ -1,10 +1,10 @@
 "use client";
-import api from "@/lib/axios";
 import { useEffect, useState } from "react";
 import { LoadingSkeleton, CardSkeleton } from "@/components/ui/LoadingSkeleton";
 import { toast } from "@/components/ui/Toast";
 import ErrorModal from "@/components/ui/ErrorModal";
 import Link from "next/link";
+import { leavesService } from "@/services/api/leaves.service";
 
 export default function LeavesPage() {
   const [balance, setBalance] = useState<any>(null);
@@ -40,8 +40,8 @@ export default function LeavesPage() {
     }
     
     try {
-      const response = await api.get("/leaves/employee/balance");
-      setBalance(response.data);
+      const data = await leavesService.getEmployeeBalance();
+      setBalance(data);
       setLastRefresh(new Date());
       setError(null);
     } catch (err: any) {
@@ -57,8 +57,8 @@ export default function LeavesPage() {
 
   const fetchPendingRequests = async () => {
     try {
-      const response = await api.get("/leaves/employee/history");
-      const allRequests = response.data || [];
+      const data = await leavesService.getEmployeeHistory();
+      const allRequests = data || [];
       const pending = allRequests.filter((req: any) => req.status === "pending" || req.status === "PENDING");
       setPendingRequests(pending);
     } catch (err: any) {

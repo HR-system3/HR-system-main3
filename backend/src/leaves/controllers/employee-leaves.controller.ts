@@ -54,16 +54,12 @@ export class EmployeeLeavesController {
     return this.leavesService.cancelPendingRequest(employeeId, id);
   }
 
+  // Specific routes must come before parameterized routes
   @Get('balance')
   async getBalance(@Req() req) {
     const user = this.getMockUser(req);
     const employeeId = user.employeeId;
     return this.leavesService.getEmployeeBalance(employeeId);
-  }
-
-  @Get(':employeeId/balance')
-  async getEmployeeBalanceById(@Param('employeeId') employeeId: string) {
-    return this.leavesService.getEmployeeBalance(new Types.ObjectId(employeeId));
   }
 
   @Get('history')
@@ -76,6 +72,12 @@ export class EmployeeLeavesController {
   @Get('requests/:id/timeline')
   async getRequestTimeline(@Req() req, @Param('id') id: string) {
     return this.leavesService.getRequestTimeline(id as any);
+  }
+
+  // Parameterized routes come after specific routes
+  @Get(':employeeId/balance')
+  async getEmployeeBalanceById(@Param('employeeId') employeeId: string) {
+    return this.leavesService.getEmployeeBalance(new Types.ObjectId(employeeId));
   }
 
   @Post('validate')

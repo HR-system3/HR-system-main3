@@ -1,10 +1,10 @@
 "use client";
-import api from "@/lib/axios";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { LoadingSkeleton, TableSkeleton } from "@/components/ui/LoadingSkeleton";
 import { toast } from "@/components/ui/Toast";
 import ErrorModal from "@/components/ui/ErrorModal";
+import { leavesService } from "@/services/api/leaves.service";
 
 export default function ApprovalQueuePage() {
   const [requests, setRequests] = useState<any[]>([]);
@@ -31,8 +31,8 @@ export default function ApprovalQueuePage() {
 
   const fetchRequests = async () => {
     try {
-      const response = await api.get("/leaves/manager/requests");
-      setRequests(response.data);
+      const data = await leavesService.getManagerRequests();
+      setRequests(data);
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to load approval queue");
       toast.error("Failed to load approval queue");
@@ -45,8 +45,8 @@ export default function ApprovalQueuePage() {
     setLoadingBalance(true);
     try {
       // Try to get employee balance from backend
-      const response = await api.get(`/leaves/employee/${employeeId}/balance`);
-      setEmployeeBalance(response.data);
+      const data = await leavesService.getEmployeeBalance();
+      setEmployeeBalance(data);
     } catch (error) {
       // If endpoint doesn't exist, create mock data for demo
       console.log("Balance endpoint not available, using mock data");
@@ -119,7 +119,7 @@ export default function ApprovalQueuePage() {
     }
 
     try {
-      await api.post(`/leaves/manager/requests/${requestId}/decision`, {
+      await leavesService.approveRejectRequest(requestId, {
         decision,
         comment,
         override,

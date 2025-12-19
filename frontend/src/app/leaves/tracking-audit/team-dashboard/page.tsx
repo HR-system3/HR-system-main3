@@ -1,9 +1,9 @@
 "use client";
-import api from "@/lib/axios";
 import { useEffect, useState } from "react";
 import { LoadingSkeleton, CardSkeleton } from "@/components/ui/LoadingSkeleton";
 import { toast } from "@/components/ui/Toast";
 import ErrorModal from "@/components/ui/ErrorModal";
+import { leavesService } from "@/services/api/leaves.service";
 
 export default function TeamDashboardPage() {
   const [teamData, setTeamData] = useState<any[]>([]);
@@ -16,9 +16,9 @@ export default function TeamDashboardPage() {
 
   const fetchTeamData = async () => {
     try {
-      const response = await api.get("/leaves/manager/requests");
+      const data = await leavesService.getManagerRequests();
       // Group by employee
-      const grouped = response.data.reduce((acc: any, req: any) => {
+      const grouped = data.reduce((acc: any, req: any) => {
         const empId = req.employeeId?._id || req.employeeId;
         if (!acc[empId]) {
           acc[empId] = {

@@ -18,7 +18,9 @@ export default function PayrollConfigurationLayout({
           <Header />
           <main className="app-main">
             <div className="page">
-              <div className="page-inner">{children}</div>
+              <div className="page-inner">
+                <div className="panel">{children}</div>
+              </div>
             </div>
           </main>
         </div>

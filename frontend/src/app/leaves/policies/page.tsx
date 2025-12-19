@@ -1,9 +1,9 @@
 "use client";
-import api from "@/lib/axios";
 import { useEffect, useState } from "react";
 import { LoadingSkeleton, TableSkeleton } from "@/components/ui/LoadingSkeleton";
 import { toast } from "@/components/ui/Toast";
 import ErrorModal from "@/components/ui/ErrorModal";
+import { leavesService } from "@/services/api/leaves.service";
 
 export default function LeaveTypesPage() {
   const [leaveTypes, setLeaveTypes] = useState<any[]>([]);
@@ -23,8 +23,8 @@ export default function LeaveTypesPage() {
 
   const fetchLeaveTypes = async () => {
     try {
-      const response = await api.get("/leaves/hr/types");
-      setLeaveTypes(response.data);
+      const data = await leavesService.getHrTypes();
+      setLeaveTypes(data);
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to load leave types");
       toast.error("Failed to load leave types");
@@ -43,7 +43,7 @@ export default function LeaveTypesPage() {
       };
       delete (payload as any).maxDays;
       
-      await api.post("/leaves/hr/types", payload);
+      await leavesService.createLeaveType(payload);
       toast.success("Leave type created successfully");
       setShowForm(false);
       setFormData({ name: "", code: "", maxDays: "", isPaid: true });
@@ -58,7 +58,7 @@ export default function LeaveTypesPage() {
     if (!confirm("Are you sure you want to delete this leave type? This action cannot be undone.")) return;
 
     try {
-      await api.delete(`/leaves/hr/types/${id}`);
+      await leavesService.deleteLeaveType(id);
       toast.success("Leave type deleted successfully");
       fetchLeaveTypes();
     } catch (err: any) {

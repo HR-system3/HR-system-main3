@@ -11,9 +11,9 @@ import { payType, payTypeSchema } from './models/payType.schema';
 import { signingBonus, signingBonusSchema } from './models/signingBonus.schema';
 import { taxRules, taxRulesSchema } from './models/taxRules.schema';
 import { terminationAndResignationBenefits, terminationAndResignationBenefitsSchema } from './models/terminationAndResignationBenefits';
-import { ApprovalModule } from './approval/approval.module'; // Ensure this is added if it was missing
+import { ApprovalController } from './approval/approval.controller';
+import { ApprovalService } from './approval/approval.service';
 import { payGrade, payGradeSchema } from './models/payGrades.schema';
-
 
 @Module({
   imports: [
@@ -29,11 +29,14 @@ import { payGrade, payGradeSchema } from './models/payGrades.schema';
       { name: payGrade.name, schema: payGradeSchema }
 
     ]),
-    ApprovalModule,
   ],
-  controllers: [PayrollConfigurationController],
+  controllers: [
+    PayrollConfigurationController,
+    ApprovalController, // Explicitly register ApprovalController here
+  ],
   providers: [
     PayrollConfigurationService,
+    ApprovalService, // Also provide ApprovalService directly
   ],
 })
 export class PayrollConfigurationModule {}

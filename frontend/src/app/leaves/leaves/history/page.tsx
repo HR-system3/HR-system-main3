@@ -1,9 +1,9 @@
 "use client";
-import api from "@/lib/axios";
 import { useEffect, useState } from "react";
 import { LoadingSkeleton, TableSkeleton } from "@/components/ui/LoadingSkeleton";
 import { toast } from "@/components/ui/Toast";
 import Link from "next/link";
+import { leavesService } from "@/services/api/leaves.service";
 
 export default function LeaveHistoryPage() {
   const [history, setHistory] = useState<any[]>([]);
@@ -17,8 +17,8 @@ export default function LeaveHistoryPage() {
 
   const fetchHistory = async () => {
     try {
-      const response = await api.get("/leaves/employee/history");
-      setHistory(response.data || []);
+      const data = await leavesService.getEmployeeHistory();
+      setHistory(data || []);
     } catch (error) {
       console.error("Error fetching leave history:", error);
       toast.error("Failed to load leave history");

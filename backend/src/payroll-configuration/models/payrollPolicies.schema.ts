@@ -51,7 +51,3 @@ export class payrollPolicies {
 
 export const payrollPoliciesSchema = SchemaFactory.createForClass(payrollPolicies);
 
-
-
-
-

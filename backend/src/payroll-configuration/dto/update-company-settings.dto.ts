@@ -1,9 +1,13 @@
-import { IsDateString, IsOptional, IsString } from 'class-validator';
+import { IsInt, IsNumber, IsOptional, IsString, Min, Max } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class UpdateCompanySettingsDto {
   @IsOptional()
-  @IsDateString()
-  payDate?: Date;
+  @IsNumber()
+  @Type(() => Number)
+  @Min(1)
+  @Max(31)
+  payDate?: number; // Frontend sends number (1-31), not DateString
 
   @IsOptional()
   @IsString()

@@ -186,11 +186,11 @@ export default function Navigation() {
 
   return (
     <nav className="h-full w-full p-4 overflow-y-auto" style={{ paddingTop: '60px' }}>
-      <ul className="space-y-1">
+      <ul className="space-y-2">
         {navItems.map((item, index) => {
           if ('section' in item) {
             return (
-              <li key={`section-${index}`} className="pt-4 pb-2 px-2">
+              <li key={`section-${index}`} className="pt-6 pb-3 px-2">
                 <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
                   {item.section}
                 </p>
@@ -200,29 +200,34 @@ export default function Navigation() {
 
           const isActive = pathname === item.href || pathname?.startsWith(item.href + '/');
           return (
-            <li key={item.href}>
+            <li key={item.href} className="mb-2">
               <Link
                 href={item.href}
                 className={cn(
-                  'flex items-center gap-3 px-4 py-2 rounded-lg transition-colors text-sm',
+                  'nav-item flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all text-sm',
                   isActive
-                    ? 'font-medium'
-                    : ''
+                    ? 'font-medium nav-item-active'
+                    : 'nav-item-inactive'
                 )}
                 style={{
                   color: isActive ? '#e5f0ff' : 'var(--text-muted)',
-                  background: isActive ? 'var(--accent-soft)' : 'transparent',
+                  background: isActive ? 'var(--accent-soft)' : 'rgba(15, 23, 42, 0.4)',
+                  border: isActive ? '1px solid rgba(56, 189, 248, 0.4)' : '1px solid rgba(255, 255, 255, 0.1)',
                 }}
                 onMouseEnter={(e) => {
                   if (!isActive) {
-                    e.currentTarget.style.background = 'rgba(15, 23, 42, 0.6)';
+                    e.currentTarget.style.background = 'rgba(15, 23, 42, 0.75)';
                     e.currentTarget.style.color = 'var(--text-main)';
+                    e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.3)';
+                    e.currentTarget.style.transform = 'translateX(2px)';
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!isActive) {
-                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.background = 'rgba(15, 23, 42, 0.4)';
                     e.currentTarget.style.color = 'var(--text-muted)';
+                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                    e.currentTarget.style.transform = 'translateX(0)';
                   }
                 }}
               >

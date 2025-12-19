@@ -1,9 +1,9 @@
 "use client";
-import api from "@/lib/axios";
 import { useEffect, useState } from "react";
 import { LoadingSkeleton, CardSkeleton } from "@/components/ui/LoadingSkeleton";
 import { toast } from "@/components/ui/Toast";
 import ErrorModal from "@/components/ui/ErrorModal";
+import { leavesService } from "@/services/api/leaves.service";
 
 export default function HRMonitoringPage() {
   const [stats, setStats] = useState<any>(null);
@@ -26,12 +26,12 @@ export default function HRMonitoringPage() {
 
   const fetchData = async () => {
     try {
-      const [statsRes, patternsRes] = await Promise.all([
-        api.get("/leaves/hr/overview"),
-        api.get("/leaves/hr/reports/patterns"),
+      const [statsData, patternsData] = await Promise.all([
+        leavesService.getHrOverview(),
+        leavesService.getHrPatternsReport(),
       ]);
-      setStats(statsRes.data);
-      setIrregularPatterns(patternsRes.data);
+      setStats(statsData);
+      setIrregularPatterns(patternsData);
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to load monitoring data");
       toast.error("Failed to load monitoring data");
@@ -51,7 +51,7 @@ export default function HRMonitoringPage() {
     setSubmitting(true);
     
     try {
-      await api.post("/leaves/hr/adjustments", {
+      await leavesService.manualAdjustment({
         employeeId: adjustmentData.employeeId,
         leaveTypeId: adjustmentData.leaveTypeId,
         days: adjustmentData.type === "subtract" ? -parseInt(adjustmentData.days) : parseInt(adjustmentData.days),

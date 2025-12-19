@@ -1,9 +1,9 @@
 "use client";
-import api from "@/lib/axios";
 import { useState, useEffect } from "react";
 import { toast } from "@/components/ui/Toast";
 import ValidationAlert from "@/components/ui/ValidationAlert";
 import { LoadingSkeleton } from "@/components/ui/LoadingSkeleton";
+import { leavesService } from "@/services/api/leaves.service";
 
 export default function RequestLeavePage() {
   const [formData, setFormData] = useState({
@@ -64,8 +64,8 @@ export default function RequestLeavePage() {
 
   const fetchLeaveTypes = async () => {
     try {
-      const response = await api.get("/leaves/hr/types");
-      setLeaveTypes(response.data);
+      const data = await leavesService.getHrTypes();
+      setLeaveTypes(data);
     } catch (err: any) {
       toast.error("Failed to load leave types");
     } finally {
@@ -76,8 +76,8 @@ export default function RequestLeavePage() {
   const fetchBalance = async () => {
     setBalanceLoading(true);
     try {
-      const response = await api.get("/leaves/employee/balance");
-      setBalance(response.data);
+      const data = await leavesService.getEmployeeBalance();
+      setBalance(data);
     } catch (err: any) {
       console.error("Failed to load balance:", err);
     } finally {
@@ -105,16 +105,11 @@ export default function RequestLeavePage() {
       
       // Try to get holidays from backend to exclude them
       try {
-        const response = await api.get("/leaves/hr/holidays", {
-          params: {
-            startDate: startDate,
-            endDate: endDate,
-          },
-        });
+        const holidaysData = await leavesService.getHolidays();
         
-        if (response.data && Array.isArray(response.data)) {
+        if (holidaysData && Array.isArray(holidaysData)) {
           // Count holidays that fall within the date range and aren't weekends
-          const holidaysInRange = response.data.filter((holiday: any) => {
+          const holidaysInRange = holidaysData.filter((holiday: any) => {
             const holidayDate = new Date(holiday.date);
             const dayOfWeek = holidayDate.getDay();
             return holidayDate >= start && holidayDate <= end && dayOfWeek !== 0 && dayOfWeek !== 6;
@@ -172,18 +167,18 @@ export default function RequestLeavePage() {
 
   const checkBackendValidation = async () => {
     try {
-      const response = await api.post("/leaves/employee/validate", {
+      const response = await leavesService.validateLeaveRequest({
         startDate: new Date(formData.startDate),
         endDate: new Date(formData.endDate),
         leaveTypeId: formData.leaveTypeId,
       });
       
       // If backend returns warnings, show them
-      if (response.data.warnings) {
-        setValidationWarnings(response.data.warnings);
-        if (response.data.warnings.overlap?.length > 0 || 
-            response.data.warnings.blockedPeriods?.length > 0 || 
-            response.data.warnings.teamConflicts?.length > 0) {
+      if (response && response.warnings) {
+        setValidationWarnings(response.warnings);
+        if (response.warnings.overlap?.length > 0 || 
+            response.warnings.blockedPeriods?.length > 0 || 
+            response.warnings.teamConflicts?.length > 0) {
           setShowWarningConfirm(true);
           return false;
         }
@@ -238,7 +233,7 @@ export default function RequestLeavePage() {
         } : {}),
       };
 
-      await api.post("/leaves/employee", submitData);
+      await leavesService.createLeaveRequest(submitData);
       
       // Handle file uploads if any
       if (attachments.length > 0) {

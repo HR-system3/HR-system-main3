@@ -1,20 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import api from "@/lib/axios";
 import Card from "@/components/common/Card";
 import Button from "@/components/common/Button";
 import { FileCheck, Check, X, Eye, AlertCircle, Clock } from "lucide-react";
-
-type ConfigStatus = "DRAFT" | "APPROVED" | "REJECTED" | "PENDING_MANAGER_APPROVAL";
-
-type ApprovalItem = {
-  id: string;
-  type: string;
-  name: string;
-  status: ConfigStatus;
-  createdAt: string;
-};
+import { payrollConfigurationService, ApprovalItem, ConfigStatus } from "@/services/api/payroll-configuration.service";
 
 export default function ApprovalsPage() {
   const [approvals, setApprovals] = useState<ApprovalItem[]>([]);
@@ -31,8 +21,8 @@ export default function ApprovalsPage() {
     setError(null);
     setLoading(true);
     try {
-      const res = await api.get("/payroll-configuration/approvals/pending");
-      setApprovals(res.data || []);
+      const data = await payrollConfigurationService.getPendingApprovals();
+      setApprovals(data || []);
     } catch (err: any) {
       console.error("Failed to load approvals", err);
       setError(err.response?.data?.message || err.message || "Failed to load approvals");
@@ -45,7 +35,7 @@ export default function ApprovalsPage() {
   const handleApprove = async (item: ApprovalItem) => {
     setProcessingId(item.id);
     try {
-      await api.post("/payroll-configuration/approvals/approve", {
+      await payrollConfigurationService.approveRequest({
         id: item.id,
         type: item.type,
       });
@@ -62,7 +52,7 @@ export default function ApprovalsPage() {
     if (!confirm("Are you sure you want to reject this configuration?")) return;
     setProcessingId(item.id);
     try {
-      await api.post("/payroll-configuration/approvals/reject", {
+      await payrollConfigurationService.rejectRequest({
         id: item.id,
         type: item.type,
       });

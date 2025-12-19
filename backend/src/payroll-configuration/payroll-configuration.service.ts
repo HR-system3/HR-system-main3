@@ -436,18 +436,41 @@ export class PayrollConfigurationService {
   // =========================================================
   async upsertCompanySettings(dto: UpdateCompanySettingsDto) {
     const existing = await this.companySettingsModel.findOne();
+    
+    // Convert payDate number (1-31) to Date if provided
+    const updateData: any = { ...dto };
+    if (dto.payDate !== undefined && typeof dto.payDate === 'number') {
+      // Create a date with the payDate as the day of month (using current month/year)
+      const now = new Date();
+      updateData.payDate = new Date(now.getFullYear(), now.getMonth(), dto.payDate);
+    }
+    
     if (!existing) {
-      const created = new this.companySettingsModel({
-        ...dto,
-      });
+      const created = new this.companySettingsModel(updateData);
       return created.save();
     }
 
-    Object.assign(existing, dto);
+    Object.assign(existing, updateData);
     return existing.save();
   }
 
   async getCompanySettings() {
-    return this.companySettingsModel.findOne();
+    const settings = await this.companySettingsModel.findOne();
+    // Return default settings if none exist (to prevent null response)
+    if (!settings) {
+      return {
+        payDate: 1, // Return as number (day of month) for frontend compatibility
+        timeZone: 'UTC',
+        currency: 'USD',
+      };
+    }
+    
+    // Convert Date payDate to number (day of month) for frontend
+    const result: any = settings.toObject();
+    if (result.payDate instanceof Date) {
+      result.payDate = result.payDate.getDate(); // Extract day of month (1-31)
+    }
+    
+    return result;
   }
 }

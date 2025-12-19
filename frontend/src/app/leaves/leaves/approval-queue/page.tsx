@@ -1,7 +1,7 @@
 "use client";
-import api from "@/lib/axios";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { leavesService } from "@/services/api/leaves.service";
 
 interface LeaveRequest {
   _id: string;
@@ -45,19 +45,13 @@ export default function ApprovalQueuePage() {
           setUserRole(decoded.role || "");
         }
 
-        let endpoint = "";
+        let data: any[] = [];
         if (userRole === "manager") {
-          endpoint = "/leaves/manager/requests";
+          data = await leavesService.getManagerRequests();
         } else if (userRole === "hr" || userRole === "admin") {
-          endpoint = "/leaves/hr/requests";
+          data = await leavesService.getHrRequests({ status: filter === "all" ? undefined : filter });
         }
-
-        if (endpoint) {
-          const response = await api.get(endpoint, {
-            params: { status: filter === "all" ? undefined : filter },
-          });
-          setRequests(response.data || []);
-        }
+        setRequests(data || []);
       } catch (error) {
         console.error("Error fetching approval queue:", error);
       } finally {
@@ -77,25 +71,25 @@ export default function ApprovalQueuePage() {
     if (commentText === null) return;
 
     try {
-      const endpoint =
-        userRole === "manager"
-          ? `/leaves/manager/requests/${requestId}/decision`
-          : `/leaves/hr/requests/${requestId}/finalize`;
-
-      // Backend expects { approved: boolean, comment?: string }
-      await api.post(endpoint, {
+      const dto = {
         approved: action === "approved",
         comment: commentText,
-      });
+      };
+
+      if (userRole === "manager") {
+        await leavesService.approveRejectRequest(requestId, dto);
+      } else {
+        await leavesService.finalizeRequest(requestId, dto);
+      }
 
       // Refresh the list
-      const response = await api.get(
-        userRole === "manager" ? "/leaves/manager/requests" : "/leaves/hr/requests",
-        {
-          params: { status: filter === "all" ? undefined : filter },
-        }
-      );
-      setRequests(response.data || []);
+      let data: any[] = [];
+      if (userRole === "manager") {
+        data = await leavesService.getManagerRequests();
+      } else {
+        data = await leavesService.getHrRequests({ status: filter === "all" ? undefined : filter });
+      }
+      setRequests(data || []);
     } catch (error: any) {
       alert(error.response?.data?.message || `Failed to ${action} request`);
     }

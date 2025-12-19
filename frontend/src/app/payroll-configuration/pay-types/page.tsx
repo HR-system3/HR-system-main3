@@ -1,20 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import api from "@/lib/axios";
 import Card from "@/components/common/Card";
 import Button from "@/components/common/Button";
 import Input from "@/components/common/Input";
 import { Receipt, Plus, Edit2, Trash2, X, Check, CheckCircle2, XCircle, AlertCircle } from "lucide-react";
-
-type PayTypeStatus = "DRAFT" | "APPROVED" | "REJECTED";
-
-type PayType = {
-  _id: string;
-  type: string;
-  amount: number;
-  status?: PayTypeStatus;
-};
+import { payrollConfigurationService, PayType, PayTypeStatus } from "@/services/api/payroll-configuration.service";
 
 export default function PayTypesPage() {
   const [payTypes, setPayTypes] = useState<PayType[]>([]);
@@ -34,8 +25,8 @@ export default function PayTypesPage() {
     setError(null);
     setLoading(true);
     try {
-      const res = await api.get("/payroll-configuration/pay-type");
-      setPayTypes(res.data || []);
+      const data = await payrollConfigurationService.getPayTypes();
+      setPayTypes(data || []);
     } catch (err: any) {
       console.error("Failed to load pay types", err);
       setError(err.response?.data?.message || err.message || "Failed to load pay types");
@@ -59,9 +50,9 @@ export default function PayTypesPage() {
     setIsSubmitting(true);
     try {
       if (editingId) {
-        await api.put(`/payroll-configuration/pay-type/${editingId}`, { type, amount });
+        await payrollConfigurationService.updatePayType(editingId, { type, amount });
       } else {
-        await api.post("/payroll-configuration/pay-type", { type, amount });
+        await payrollConfigurationService.createPayType({ type, amount });
       }
       resetForm();
       fetchPayTypes();
@@ -95,7 +86,7 @@ export default function PayTypesPage() {
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this pay type? This action cannot be undone.")) return;
     try {
-      await api.delete(`/payroll-configuration/pay-type/${id}`);
+      await payrollConfigurationService.deletePayType(id);
       fetchPayTypes();
     } catch (err: any) {
       const errorMessage = err.response?.data?.message || err.response?.data?.error || "Failed to delete pay type";

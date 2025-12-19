@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import api from "@/lib/axios";
 import Card from "@/components/common/Card";
 import Button from "@/components/common/Button";
 import Input from "@/components/common/Input";
 import { Settings, Calendar, Globe, DollarSign, CheckCircle, AlertCircle } from "lucide-react";
+import { payrollConfigurationService } from "@/services/api/payroll-configuration.service";
 
 type CompanySettings = {
   payDate: number;
@@ -32,9 +32,9 @@ export default function CompanySettingsPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await api.get("/payroll-configuration/company-settings");
-      if (res.data) {
-        setSettings(res.data);
+      const data = await payrollConfigurationService.getCompanySettings();
+      if (data) {
+        setSettings(data);
       }
     } catch (err: any) {
       console.error("Failed to load settings", err);
@@ -49,7 +49,7 @@ export default function CompanySettingsPage() {
     setError(null);
     setSuccess(false);
     try {
-      await api.put("/payroll-configuration/company-settings", settings);
+      await payrollConfigurationService.updateCompanySettings(settings);
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
     } catch (err: any) {

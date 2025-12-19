@@ -39,6 +39,10 @@ import {
   ApprovalConfig,
   ApprovalConfigDocument,
 } from './models/approval-config.schema';
+import {
+  LeaveCategory,
+  LeaveCategoryDocument,
+} from './models/leave-category.schema';
 
 import { LeaveStatus } from './enums/leave-status.enum';
 import { AccrualMethod } from './enums/accrual-method.enum';
@@ -72,6 +76,9 @@ export class LeavesService {
 
     @InjectModel(ApprovalConfig.name)
     private readonly approvalConfigModel: Model<ApprovalConfigDocument>,
+
+    @InjectModel(LeaveCategory.name)
+    private readonly leaveCategoryModel: Model<LeaveCategoryDocument>,
   ) {}
 
   // ======================================================
@@ -318,6 +325,98 @@ export class LeavesService {
       .find({ employeeId })
       .sort({ createdAt: -1 })
       .lean();
+  }
+
+  async validateLeaveRequest(employeeId: Types.ObjectId, dto: any) {
+    const warnings: any = {
+      overlap: [],
+      blockedPeriods: [],
+      teamConflicts: [],
+    };
+
+    const startDate = new Date(dto.startDate);
+    const endDate = new Date(dto.endDate);
+
+    // Check for overlapping leave requests for the same employee
+    const overlappingRequests = await this.leaveRequestModel.find({
+      employeeId,
+      status: { $in: [LeaveStatus.PENDING, LeaveStatus.APPROVED] },
+      $or: [
+        { startDate: { $lte: endDate }, endDate: { $gte: startDate } },
+      ],
+    });
+
+    if (overlappingRequests.length > 0) {
+      warnings.overlap = overlappingRequests.map(req => ({
+        id: req._id,
+        startDate: req.startDate,
+        endDate: req.endDate,
+        status: req.status,
+      }));
+    }
+
+    // Check for blocked periods in calendars
+    // Note: Calendar association may need to be configured
+    try {
+      const calendars = await this.calendarModel.find({});
+      for (const calendar of calendars) {
+        if (calendar.blockedPeriods) {
+          const blockedInRange = calendar.blockedPeriods.filter(bp => {
+            const bpStart = new Date(bp.start);
+            const bpEnd = new Date(bp.end);
+            return (bpStart <= endDate && bpEnd >= startDate);
+          });
+
+          if (blockedInRange.length > 0) {
+            warnings.blockedPeriods.push(...blockedInRange.map(bp => ({
+              start: bp.start,
+              end: bp.end,
+              reason: bp.reason,
+            })));
+          }
+        }
+      }
+    } catch (err) {
+      console.log('Could not check blocked periods:', err);
+    }
+
+    // Check for team conflicts (employees with same supervisor on leave)
+    const employee = await this.employeeProfileModel.findById(employeeId);
+    if (employee?.supervisorPositionId) {
+      try {
+        // Find other employees with the same supervisor
+        const teamMembers = await this.employeeProfileModel.find({
+          supervisorPositionId: employee.supervisorPositionId,
+          _id: { $ne: employeeId }, // Exclude the requesting employee
+        });
+
+        const teamMemberIds = teamMembers.map(tm => tm._id);
+        
+        if (teamMemberIds.length > 0) {
+          const conflictingLeaves = await this.leaveRequestModel.find({
+            employeeId: { $in: teamMemberIds },
+            status: { $in: [LeaveStatus.PENDING, LeaveStatus.APPROVED] },
+            startDate: { $lte: endDate },
+            endDate: { $gte: startDate },
+          }).populate('employeeId', 'name email');
+
+          if (conflictingLeaves.length > 0) {
+            warnings.teamConflicts = conflictingLeaves.map(leave => ({
+              employeeName: (leave.employeeId as any)?.name || 'Unknown',
+              startDate: leave.startDate,
+              endDate: leave.endDate,
+            }));
+          }
+        }
+      } catch (err) {
+        console.log('Could not check team conflicts:', err);
+      }
+    }
+
+    return {
+      valid: warnings.overlap.length === 0 && warnings.blockedPeriods.length === 0,
+      warnings,
+    };
   }
 
   // ======================================================
@@ -1501,10 +1600,70 @@ export class LeavesService {
 
   // 4) configureLeaveType
   async configureLeaveType(dto: any) {
+    // Map maxDays to maxDurationDays for frontend compatibility
+    if (dto.maxDays !== undefined) {
+      dto.maxDurationDays = dto.maxDays;
+      delete dto.maxDays;
+    }
+
+    // Handle missing category - create or get default category for development
+    if (!dto.category) {
+      let defaultCategory = await this.leaveCategoryModel.findOne({ code: 'DEFAULT' });
+      if (!defaultCategory) {
+        defaultCategory = await this.leaveCategoryModel.create({
+          code: 'DEFAULT',
+          name: 'Default Category',
+          affectsBalance: true,
+          description: 'Default category for leave types',
+        });
+      }
+      dto.category = defaultCategory._id;
+    } else if (typeof dto.category === 'string') {
+      // Convert string ID to ObjectId if needed
+      dto.category = new Types.ObjectId(dto.category);
+    }
+
     if (dto.id) {
-      return this.leaveTypeModel.findByIdAndUpdate(dto.id, dto, { new: true });
+      const { id, ...updateData } = dto;
+      return this.leaveTypeModel.findByIdAndUpdate(id, updateData, { new: true });
     }
     return this.leaveTypeModel.create(dto);
+  }
+
+  async deleteLeaveType(id: string) {
+    // Check if the leave type exists
+    const leaveType = await this.leaveTypeModel.findById(id);
+    if (!leaveType) {
+      throw new NotFoundException('Leave type not found');
+    }
+
+    // Check if there are any leave requests using this leave type
+    const requestsCount = await this.leaveRequestModel.countDocuments({ leaveTypeId: new Types.ObjectId(id) });
+    if (requestsCount > 0) {
+      throw new BadRequestException(
+        `Cannot delete leave type. There are ${requestsCount} leave request(s) associated with this type. Consider deactivating it instead.`
+      );
+    }
+
+    // Check if there are any entitlements using this leave type
+    const entitlementsCount = await this.leaveEntitlementModel.countDocuments({ leaveTypeId: new Types.ObjectId(id) });
+    if (entitlementsCount > 0) {
+      throw new BadRequestException(
+        `Cannot delete leave type. There are ${entitlementsCount} entitlement(s) associated with this type. Consider deactivating it instead.`
+      );
+    }
+
+    // If no dependencies, proceed with deletion
+    await this.leaveTypeModel.findByIdAndDelete(id);
+    
+    return { 
+      message: 'Leave type deleted successfully',
+      deletedId: id 
+    };
+  }
+
+  async getLeaveTypes() {
+    return this.leaveTypeModel.find().lean();
   }
 
   // 5) configureEntitlement
@@ -1524,12 +1683,60 @@ export class LeavesService {
     return this.leaveEntitlementModel.create(dto);
   }
 
+  async getEntitlements() {
+    return this.leaveEntitlementModel.find().populate('employeeId').populate('leaveTypeId').lean();
+  }
+
   // 6) configureApprovalFlow
   async configureApprovalFlow(dto: any) {
     if (dto.id) {
       return this.approvalConfigModel.findByIdAndUpdate(dto.id, dto, { new: true });
     }
     return this.approvalConfigModel.create(dto);
+  }
+
+  async getApprovalWorkflows() {
+    return this.approvalConfigModel.find().lean();
+  }
+
+  async getAccrualConfig() {
+    // Return accrual configuration from leave types meta or a separate config
+    const leaveTypes = await this.leaveTypeModel.find().lean();
+    return {
+      accrualMethod: 'monthly', // Default, can be configured per leave type
+      leaveTypes: leaveTypes.map((lt: any) => ({
+        leaveTypeId: lt._id,
+        name: lt.name,
+        accrualConfig: lt.meta?.accrual || {},
+      })),
+    };
+  }
+
+  async configureAccrual(dto: any) {
+    // Update accrual configuration
+    if (dto.leaveTypeId) {
+      const leaveType = await this.leaveTypeModel.findById(dto.leaveTypeId);
+      if (leaveType) {
+        (leaveType as any).meta = { ...(leaveType as any).meta, accrual: dto.config };
+        return leaveType.save();
+      }
+    }
+    return { message: 'Accrual configuration updated' };
+  }
+
+  async getHolidays() {
+    const calendars = await this.calendarModel.find().lean();
+    const allHolidays: any[] = [];
+    for (const cal of calendars) {
+      if ((cal as any).holidays) {
+        allHolidays.push(...(cal as any).holidays.map((h: any) => ({
+          ...h,
+          calendarId: cal._id,
+          calendarName: (cal as any).name,
+        })));
+      }
+    }
+    return allHolidays;
   }
 
   // 7) HR Overview (controller calls getHrOverview)

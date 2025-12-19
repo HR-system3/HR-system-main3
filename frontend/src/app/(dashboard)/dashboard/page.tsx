@@ -555,6 +555,58 @@ export default function DashboardPage() {
           </div>
         </Card>
 
+        {/* Leaves Section */}
+        <Card title="Leaves">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <Link
+              href="/leaves/request"
+              style={{
+                display: 'block',
+                padding: '12px',
+                borderRadius: '12px',
+                background: 'rgba(29, 155, 240, 0.1)',
+                border: '1px solid rgba(29, 155, 240, 0.3)',
+                textDecoration: 'none',
+                transition: 'all var(--transition-fast)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(29, 155, 240, 0.2)';
+                e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.5)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(29, 155, 240, 0.1)';
+                e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.3)';
+              }}
+            >
+              <h4 style={{ fontWeight: '500', color: '#60a5fa', marginBottom: '4px' }}>Request Leave</h4>
+              <p className="text-muted" style={{ fontSize: '12px' }}>Submit a new leave request</p>
+            </Link>
+            <Link
+              href="/leaves/history"
+              style={{
+                display: 'block',
+                padding: '12px',
+                borderRadius: '12px',
+                background: 'rgba(29, 155, 240, 0.1)',
+                border: '1px solid rgba(29, 155, 240, 0.3)',
+                textDecoration: 'none',
+                transition: 'all var(--transition-fast)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(29, 155, 240, 0.2)';
+                e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.5)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(29, 155, 240, 0.1)';
+                e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.3)';
+              }}
+            >
+              <h4 style={{ fontWeight: '500', color: '#60a5fa', marginBottom: '4px' }}>Leave History</h4>
+              <p className="text-muted" style={{ fontSize: '12px' }}>View your leave request history</p>
+            </Link>
+          </div>
+        </Card>
+
         {/* Payroll Configuration Section */}
         {(hasPermission(user?.role || '', 'canAssignRoles') || 
           (user?.role && (user.role.toLowerCase().includes('admin') || user.role.toLowerCase().includes('hr') || user.role.toLowerCase().includes('payroll')))) && (

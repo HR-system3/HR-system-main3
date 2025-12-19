@@ -17,6 +17,9 @@ import { ApprovalConfig, ApprovalConfigSchema } from './models/approval-config.s
 import { EmployeeProfileModule } from '../employee-profile/employee-profile.module';
 import { TimeManagementModule } from '../time-management/time-management.module';
 import { AuthModule } from '../auth/auth.module';
+import { EmployeeLeavesController } from './controllers/employee-leaves.controller';
+import { ManagerLeavesController } from './controllers/manager-leaves.controller';
+import { HrLeavesController } from './controllers/hr-leaves.controller';
 
 @Module({
   imports:[MongooseModule.forFeature([
@@ -33,6 +36,7 @@ import { AuthModule } from '../auth/auth.module';
     {name:LeaveAuditLog.name, schema:LeaveAuditLogSchema},
     {name:ApprovalConfig.name, schema:ApprovalConfigSchema}
   ]),EmployeeProfileModule,TimeManagementModule,AuthModule],
+  controllers: [EmployeeLeavesController, ManagerLeavesController, HrLeavesController],
   providers: [LeavesService, LeavesSchedulerService],
   exports:[LeavesService]
 })

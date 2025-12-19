@@ -63,6 +63,16 @@ const allNavItems: NavItemType[] = [
   { name: 'Manager Attendance', href: '/time-management/manager/attendance', icon: '👔', permission: 'canViewManagerTeam' },
   { name: 'Approvals', href: '/time-management/manager/approvals', icon: '✅', permission: 'canViewManagerTeam' },
   
+  // Leaves
+  { section: 'Leaves' },
+  { name: 'Leaves Dashboard', href: '/leaves', icon: '📋' },
+  { name: 'Request Leave', href: '/leaves/request', icon: '📝' },
+  { name: 'Leave History', href: '/leaves/history', icon: '📋' },
+  { name: 'Approval Queue', href: '/leaves/approval-queue', icon: '✅', permission: 'leavesAdmin' },
+  { name: 'Policies', href: '/leaves/policies', icon: '📄', permission: 'leavesAdmin' },
+  { name: 'Tracking & Audit', href: '/leaves/tracking-audit/team-dashboard', icon: '📊', permission: 'leavesAdmin' },
+  { name: 'HR Monitoring', href: '/leaves/tracking-audit/hr-monitoring', icon: '👁️', permission: 'leavesAdmin' },
+  
   // Payroll Configuration
   { section: 'Payroll Configuration' },
   { name: 'Company Settings', href: '/payroll-configuration/company-settings', icon: '⚙️' },
@@ -118,6 +128,27 @@ export default function Navigation() {
       if (item.href === ROUTES.PERFORMANCE_DISPUTES) {
         return performanceFeatureAccess.canViewDisputes(user.role);
       }
+    }
+    
+    // Special handling for Leaves items
+    if (item.href.startsWith('/leaves/')) {
+      if (!user?.role) {
+        return false;
+      }
+      const roleLower = user.role.toLowerCase();
+      
+      // Request Leave and Leave History visible to all authenticated users
+      if (item.href === '/leaves/request' || item.href === '/leaves/history') {
+        return true;
+      }
+      
+      // Admin/HR/Manager roles for other leaves pages
+      return (
+        roleLower.includes('admin') ||
+        roleLower.includes('hr') ||
+        roleLower.includes('manager') ||
+        roleLower === 'system admin'
+      );
     }
     
     // Special handling for Payroll Configuration items

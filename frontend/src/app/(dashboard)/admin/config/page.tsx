@@ -296,7 +296,7 @@ export default function SystemAdminConfigPage() {
             </div>
           )}
         </div>
-      )}
+      </Card>
     </div>
   );
 }

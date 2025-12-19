@@ -14,7 +14,18 @@ import { Contract,ContractSchema } from './models/contract.schema';
 import { Document,DocumentSchema } from './models/document.schema';
 import { TerminationRequest,TerminationRequestSchema } from './models/termination-request.schema';
 import { ClearanceChecklist,ClearanceChecklistSchema } from './models/clearance-checklist.schema';
+import { Onboarding,OnboardingSchema } from './models/onboarding.schema';
 import { EmployeeProfileModule } from '../employee-profile/employee-profile.module';
+import { JobsController } from './controllers/jobs.controller';
+import { JobTemplatesController } from './controllers/job-templates.controller';
+import { ApplicationsController } from './controllers/applications.controller';
+import { InterviewsController } from './controllers/interviews.controller';
+import { OffersController } from './controllers/offers.controller';
+import { TerminationsController } from './controllers/terminations.controller';
+import { ClearanceChecklistsController } from './controllers/clearance-checklists.controller';
+import { AnalyticsController } from './controllers/analytics.controller';
+import { OnboardingController } from './controllers/onboarding.controller';
+
 @Module({
   imports:[MongooseModule.forFeature([
       { name: JobTemplate.name, schema: JobTemplateSchema },
@@ -29,9 +40,21 @@ import { EmployeeProfileModule } from '../employee-profile/employee-profile.modu
       { name: Document.name, schema: DocumentSchema },
       { name: TerminationRequest.name, schema: TerminationRequestSchema },
       { name: ClearanceChecklist.name, schema: ClearanceChecklistSchema },
+      { name: Onboarding.name, schema: OnboardingSchema },
     ]),EmployeeProfileModule
   ],
-  controllers: [RecruitmentController],
+  controllers: [
+    RecruitmentController,
+    JobsController,
+    JobTemplatesController,
+    ApplicationsController,
+    InterviewsController,
+    OffersController,
+    TerminationsController,
+    ClearanceChecklistsController,
+    AnalyticsController,
+    OnboardingController,
+  ],
   providers: [RecruitmentService],
   exports:[RecruitmentService]
 

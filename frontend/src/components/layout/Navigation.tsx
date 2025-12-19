@@ -85,6 +85,14 @@ const allNavItems: NavItemType[] = [
   { name: 'Termination Benefits', href: '/payroll-configuration/termination-benefits', icon: '👋' },
   { name: 'Approvals', href: '/payroll-configuration/approvals', icon: '✅' },
   
+  // Recruitment
+  { section: 'RECRUITMENT' },
+  { name: 'Recruitment Dashboard', href: '/recruitment', icon: '📊' },
+  { name: 'Jobs', href: '/recruitment/jobs', icon: '💼' },
+  { name: 'Applications (HR/Admin)', href: '/recruitment/admin/applications', icon: '📋', permission: 'recruitmentAdmin' },
+  { name: 'Post Job (HR/Admin)', href: '/recruitment/admin/jobs/new', icon: '➕', permission: 'recruitmentAdmin' },
+  { name: 'Offboarding (HR/Admin)', href: '/recruitment/admin/offboarding', icon: '👋', permission: 'recruitmentAdmin' },
+  
   // System Admin
   { section: 'System Administration' },
   { name: 'Create Auth User', href: '/system-admin/users/create', icon: '🛠️', permission: 'canAssignRoles' },
@@ -164,6 +172,30 @@ export default function Navigation() {
         roleLower.includes('payroll') ||
         roleLower === 'system admin'
       );
+    }
+    
+    // Special handling for Recruitment items
+    if (item.href.startsWith('/recruitment/')) {
+      if (!user?.role) {
+        return false;
+      }
+      const roleLower = user.role.toLowerCase();
+      
+      // Dashboard and Jobs visible to all authenticated users
+      if (item.href === '/recruitment' || item.href === '/recruitment/jobs') {
+        return true;
+      }
+      
+      // Admin pages require HR/Admin roles
+      if (item.href.includes('/recruitment/admin/')) {
+        return (
+          roleLower.includes('admin') ||
+          roleLower.includes('hr') ||
+          roleLower === 'system admin'
+        );
+      }
+      
+      return true;
     }
     
     // Check if user has the required permission for other items

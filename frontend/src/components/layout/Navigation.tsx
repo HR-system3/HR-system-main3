@@ -93,6 +93,31 @@ const allNavItems: NavItemType[] = [
   { name: 'Post Job (HR/Admin)', href: '/recruitment/admin/jobs/new', icon: '➕', permission: 'recruitmentAdmin' },
   { name: 'Offboarding (HR/Admin)', href: '/recruitment/admin/offboarding', icon: '👋', permission: 'recruitmentAdmin' },
   
+  // Payroll Execution
+  { section: 'PAYROLL EXECUTION' },
+  { name: 'Dashboard', href: '/payroll-execution', icon: '📊', permission: 'payrollAdmin' },
+  { name: 'Runs', href: '/payroll-execution/runs', icon: '🔄', permission: 'payrollAdmin' },
+  { name: 'Initiate', href: '/payroll-execution/initiate', icon: '🚀', permission: 'payrollAdmin' },
+  { name: 'Preview', href: '/payroll-execution/preview', icon: '👁️', permission: 'payrollAdmin' },
+  { name: 'Calculations', href: '/payroll-execution/calculations', icon: '🧮', permission: 'payrollAdmin' },
+  { name: 'Irregularities', href: '/payroll-execution/irregularities', icon: '⚠️', permission: 'payrollAdmin' },
+  { name: 'Freeze', href: '/payroll-execution/freeze', icon: '🔒', permission: 'payrollAdmin' },
+  { name: 'Unfreeze', href: '/payroll-execution/unfreeze', icon: '🔓', permission: 'payrollAdmin' },
+  { name: 'Payslips', href: '/payroll-execution/payslips', icon: '💰', permission: 'payrollAdmin' },
+  { name: 'Approvals', href: '/payroll-execution/approvals', icon: '✅', permission: 'payrollAdmin' },
+  { name: 'Signing Bonuses', href: '/payroll-execution/bounses', icon: '🎉', permission: 'payrollAdmin' },
+  { name: 'Resignation Benefits', href: '/payroll-execution/resignation-benefits', icon: '👋', permission: 'payrollAdmin' },
+  { name: 'Termination Benefits', href: '/payroll-execution/termination-benefits', icon: '🚪', permission: 'payrollAdmin' },
+  { name: 'Employees', href: '/payroll-execution/employees', icon: '👥', permission: 'payrollAdmin' },
+  
+  // Payroll Tracking
+  { section: 'PAYROLL TRACKING' },
+  { name: 'Employee Claims', href: '/payroll-tracking/employee/claims', icon: '📝' },
+  { name: 'Employee Disputes', href: '/payroll-tracking/employee/disputes', icon: '⚖️' },
+  { name: 'Payroll Claims', href: '/payroll-tracking/payroll/claims', icon: '📋', permission: 'payrollAdmin' },
+  { name: 'Payroll Disputes', href: '/payroll-tracking/payroll/disputes', icon: '🔍', permission: 'payrollAdmin' },
+  { name: 'Payroll Refunds', href: '/payroll-tracking/payroll/refunds', icon: '💸', permission: 'payrollAdmin' },
+  
   // System Admin
   { section: 'System Administration' },
   { name: 'Create Auth User', href: '/system-admin/users/create', icon: '🛠️', permission: 'canAssignRoles' },
@@ -175,22 +200,65 @@ export default function Navigation() {
     }
     
     // Special handling for Recruitment items
-    if (item.href.startsWith('/recruitment/')) {
-      if (!user?.role) {
-        return false;
-      }
-      const roleLower = user.role.toLowerCase();
-      
-      // Dashboard and Jobs visible to all authenticated users
+    if (item.href.startsWith('/recruitment')) {
+      // Dashboard and Jobs visible to all authenticated users (even without role check)
       if (item.href === '/recruitment' || item.href === '/recruitment/jobs') {
         return true;
       }
       
       // Admin pages require HR/Admin roles
       if (item.href.includes('/recruitment/admin/')) {
+        if (!user?.role) {
+          return false;
+        }
+        const roleLower = user.role.toLowerCase();
         return (
           roleLower.includes('admin') ||
           roleLower.includes('hr') ||
+          roleLower === 'system admin' ||
+          roleLower.includes('recruiter')
+        );
+      }
+      
+      // Default: show to all authenticated users
+      return true;
+    }
+    
+    // Special handling for Payroll Execution items
+    if (item.href.startsWith('/payroll-execution/')) {
+      if (!user?.role) {
+        return false;
+      }
+      const roleLower = user.role.toLowerCase();
+      // Show to HR, Admin, Finance, Payroll roles
+      return (
+        roleLower.includes('admin') ||
+        roleLower.includes('hr') ||
+        roleLower.includes('finance') ||
+        roleLower.includes('payroll') ||
+        roleLower === 'system admin'
+      );
+    }
+    
+    // Special handling for Payroll Tracking items
+    if (item.href.startsWith('/payroll-tracking/')) {
+      if (!user?.role) {
+        return false;
+      }
+      const roleLower = user.role.toLowerCase();
+      
+      // Employee pages visible to all authenticated users
+      if (item.href.includes('/payroll-tracking/employee/')) {
+        return true;
+      }
+      
+      // Payroll admin pages require HR/Admin/Finance roles
+      if (item.href.includes('/payroll-tracking/payroll/')) {
+        return (
+          roleLower.includes('admin') ||
+          roleLower.includes('hr') ||
+          roleLower.includes('finance') ||
+          roleLower.includes('payroll') ||
           roleLower === 'system admin'
         );
       }

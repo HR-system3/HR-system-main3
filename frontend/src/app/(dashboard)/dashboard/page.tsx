@@ -607,6 +607,108 @@ export default function DashboardPage() {
           </div>
         </Card>
 
+        {/* Recruitment Section */}
+        <Card title="Recruitment">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <Link
+              href="/recruitment"
+              style={{
+                display: 'block',
+                padding: '12px',
+                borderRadius: '12px',
+                background: 'rgba(29, 155, 240, 0.1)',
+                border: '1px solid rgba(29, 155, 240, 0.3)',
+                textDecoration: 'none',
+                transition: 'all var(--transition-fast)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(29, 155, 240, 0.2)';
+                e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.5)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(29, 155, 240, 0.1)';
+                e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.3)';
+              }}
+            >
+              <h4 style={{ fontWeight: '500', color: '#60a5fa', marginBottom: '4px' }}>Recruitment Dashboard</h4>
+              <p className="text-muted" style={{ fontSize: '12px' }}>View hiring pipeline and analytics</p>
+            </Link>
+            <Link
+              href="/recruitment/jobs"
+              style={{
+                display: 'block',
+                padding: '12px',
+                borderRadius: '12px',
+                background: 'rgba(29, 155, 240, 0.1)',
+                border: '1px solid rgba(29, 155, 240, 0.3)',
+                textDecoration: 'none',
+                transition: 'all var(--transition-fast)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(29, 155, 240, 0.2)';
+                e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.5)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(29, 155, 240, 0.1)';
+                e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.3)';
+              }}
+            >
+              <h4 style={{ fontWeight: '500', color: '#60a5fa', marginBottom: '4px' }}>View Jobs</h4>
+              <p className="text-muted" style={{ fontSize: '12px' }}>Browse available positions</p>
+            </Link>
+            {(user?.role && (user.role.toLowerCase().includes('admin') || user.role.toLowerCase().includes('hr'))) && (
+              <>
+                <Link
+                  href="/recruitment/admin/applications"
+                  style={{
+                    display: 'block',
+                    padding: '12px',
+                    borderRadius: '12px',
+                    background: 'rgba(29, 155, 240, 0.1)',
+                    border: '1px solid rgba(29, 155, 240, 0.3)',
+                    textDecoration: 'none',
+                    transition: 'all var(--transition-fast)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(29, 155, 240, 0.2)';
+                    e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.5)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(29, 155, 240, 0.1)';
+                    e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.3)';
+                  }}
+                >
+                  <h4 style={{ fontWeight: '500', color: '#60a5fa', marginBottom: '4px' }}>Manage Applications</h4>
+                  <p className="text-muted" style={{ fontSize: '12px' }}>Review and process applications</p>
+                </Link>
+                <Link
+                  href="/recruitment/admin/jobs/new"
+                  style={{
+                    display: 'block',
+                    padding: '12px',
+                    borderRadius: '12px',
+                    background: 'rgba(29, 155, 240, 0.1)',
+                    border: '1px solid rgba(29, 155, 240, 0.3)',
+                    textDecoration: 'none',
+                    transition: 'all var(--transition-fast)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(29, 155, 240, 0.2)';
+                    e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.5)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(29, 155, 240, 0.1)';
+                    e.currentTarget.style.borderColor = 'rgba(29, 155, 240, 0.3)';
+                  }}
+                >
+                  <h4 style={{ fontWeight: '500', color: '#60a5fa', marginBottom: '4px' }}>Post New Job</h4>
+                  <p className="text-muted" style={{ fontSize: '12px' }}>Create a new job posting</p>
+                </Link>
+              </>
+            )}
+          </div>
+        </Card>
+
         {/* Payroll Configuration Section */}
         {(hasPermission(user?.role || '', 'canAssignRoles') || 
           (user?.role && (user.role.toLowerCase().includes('admin') || user.role.toLowerCase().includes('hr') || user.role.toLowerCase().includes('payroll')))) && (

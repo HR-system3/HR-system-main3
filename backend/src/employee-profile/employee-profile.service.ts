@@ -329,6 +329,12 @@ async createEmployeeProfile(
     id: string,
     dto: AssignPositionDepartmentDto,
   ): Promise<EmployeeProfile> {
+    console.log('[assignPositionDepartment] START', {
+      employeeId: id,
+      positionId: dto.primaryPositionId,
+      departmentId: dto.primaryDepartmentId,
+    });
+
     // Validate employee profile exists
     const profile = await this.employeeProfileModel.findById(id).exec();
     if (!profile) {
@@ -343,6 +349,12 @@ async createEmployeeProfile(
     if (!position.isActive) {
       throw new BadRequestException(`Position ${position.positionId} is not active`);
     }
+    console.log('[assignPositionDepartment] Position found:', {
+      positionId: position.positionId,
+      title: position.title,
+      departmentId: position.departmentId?.toString(),
+      isActive: position.isActive,
+    });
 
     // Validate department exists and is active
     const department = await this.departmentModel.findById(dto.primaryDepartmentId).exec();
@@ -352,10 +364,20 @@ async createEmployeeProfile(
     if (!department.isActive) {
       throw new BadRequestException(`Department ${department.deptId} is not active`);
     }
+    console.log('[assignPositionDepartment] Department found:', {
+      deptId: department.deptId,
+      name: department.name,
+      isActive: department.isActive,
+    });
 
     // Validate position belongs to department
     const positionDeptId = position.departmentId?.toString();
-    const requestedDeptId = dto.primaryDepartmentId;
+    const requestedDeptId = new Types.ObjectId(dto.primaryDepartmentId).toString();
+    console.log('[assignPositionDepartment] Department validation:', {
+      positionDeptId,
+      requestedDeptId,
+      match: positionDeptId === requestedDeptId,
+    });
     if (positionDeptId !== requestedDeptId) {
       throw new BadRequestException(
         `Position ${position.positionId} (${position.title}) does not belong to department ${department.deptId} (${department.name}). Position belongs to a different department.`
@@ -394,6 +416,8 @@ async createEmployeeProfile(
       update.supervisorPositionId = new Types.ObjectId(dto.supervisorPositionId);
     }
 
+    console.log('[assignPositionDepartment] Applying update:', update);
+
     const updated = await this.employeeProfileModel
       .findByIdAndUpdate(id, { $set: update }, { new: true })
       .populate('primaryPositionId')
@@ -404,6 +428,12 @@ async createEmployeeProfile(
     if (!updated) {
       throw new NotFoundException('Employee profile not found');
     }
+
+    console.log('[assignPositionDepartment] SUCCESS - Updated employee:', {
+      employeeId: updated._id,
+      primaryPositionId: updated.primaryPositionId,
+      primaryDepartmentId: updated.primaryDepartmentId,
+    });
 
     return updated;
   }

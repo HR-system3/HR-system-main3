@@ -36,7 +36,13 @@ export default function JobsPage() {
       try {
         const res = await JobsService.getAll();
         if (res.data) {
-          setJobs(Array.isArray(res.data) ? res.data : []);
+          setJobs(Array.isArray(res.data) ? res.data.map((job: any) => ({
+            _id: job._id,
+            title: job.title,
+            department: job.department,
+            description: job.description,
+            createdAt: job.createdAt
+          })) : []);
         }
       } catch (error) {
         console.error('Failed to fetch jobs', error);

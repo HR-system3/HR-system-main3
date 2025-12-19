@@ -35,7 +35,7 @@ export default function DashboardPage() {
       setStats({
         departments: departments.length,
         positions: positions.length,
-        pendingRequests: changeRequests.filter((cr) => cr.status === 'PENDING').length,
+        pendingRequests: changeRequests.filter((cr) => cr.status === 'SUBMITTED' || cr.status === 'UNDER_REVIEW').length,
       });
     } catch (error) {
       console.error('Failed to fetch stats:', error);

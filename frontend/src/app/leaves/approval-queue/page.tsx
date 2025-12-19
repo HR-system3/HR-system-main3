@@ -5,6 +5,7 @@ import { LoadingSkeleton, TableSkeleton } from "@/components/ui/LoadingSkeleton"
 import { toast } from "@/components/ui/Toast";
 import ErrorModal from "@/components/ui/ErrorModal";
 import { leavesService } from "@/services/api/leaves.service";
+import { api } from "@/lib/axios";
 
 export default function ApprovalQueuePage() {
   const [requests, setRequests] = useState<any[]>([]);

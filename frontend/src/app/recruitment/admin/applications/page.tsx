@@ -39,7 +39,7 @@ export default function ATSPage() {
             const res = await ApplicationsService.getAll();
             
             // Axios returns { data: { success: true, data: [...] } } or { data: [...] }
-            const responseData = res.data;
+            const responseData = res.data as any[] | { data?: any[] };
             const apps = Array.isArray(responseData) ? responseData : (responseData?.data || []);
             
             const formatted = apps.map((app: any) => ({

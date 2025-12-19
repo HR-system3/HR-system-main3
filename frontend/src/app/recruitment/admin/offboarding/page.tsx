@@ -34,7 +34,7 @@ export default function OffboardingDashboard() {
             const res = await TerminationsService.getAll();
             
             // Axios returns { data: [...] } or { data: { success: true, data: [...] } }
-            const responseData = res.data;
+            const responseData = res.data as any[] | { data?: any[] };
             const terms = Array.isArray(responseData) ? responseData : (responseData?.data || []);
             setTerminations(terms);
         } catch (error) {

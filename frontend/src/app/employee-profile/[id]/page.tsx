@@ -118,12 +118,12 @@ export default function EmployeeProfileDetailsPage() {
     try {
       setLoading(true);
       setError(null);
-      await api.patch(`/employee-profile/${employee._id}/deactivate`, {
+      await api.patch(`/employee-profile/${employee?._id}/deactivate`, {
         reason,
       });
       // Reload profile to reflect new status
       const res = await api.get<EmployeeProfile>(
-        `/employee-profile/${employee._id}`,
+        `/employee-profile/${employee?._id}`,
       );
       setEmployee(res.data);
     } catch (err: any) {

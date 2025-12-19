@@ -25,7 +25,7 @@ export default function ApproveChangeRequestsPage() {
   const fetchPendingRequests = async () => {
     try {
       const data = await changeRequestsService.getAllChangeRequests();
-      const pending = data.filter((req) => req.status === 'PENDING');
+      const pending = data.filter((req) => req.status === 'SUBMITTED' || req.status === 'UNDER_REVIEW');
       setRequests(pending);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to load change requests');

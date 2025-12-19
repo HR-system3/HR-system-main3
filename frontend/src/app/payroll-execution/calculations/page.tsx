@@ -11,7 +11,7 @@ import { CalculationDetail } from '@/types/payroll-calculation.types';
 export default function CalculationsPage() {
   const [runId, setRunId] = useState('');
   // Placeholder calculation - replace with actual API call
-  const calculation: CalculationDetail | null = null;
+  const [calculation, setCalculation] = useState<CalculationDetail | null>(null);
 
   return (
     <div className="p-6">
@@ -32,15 +32,19 @@ export default function CalculationsPage() {
             placeholder="Enter payroll run ID..."
           />
         </div>
-        {calculation ? (
-          <div className="space-y-6">
-            <SalaryComponentsTable calculation={calculation} />
-            <AllowancesTable allowances={calculation.allowances} />
-            <DeductionsTable deductions={calculation.deductions} />
-            <StatutoryContributions taxes={calculation.taxes} insurances={calculation.insurances} />
-            <ProrationDetails factor={calculation.prorationFactor} reason={calculation.prorationReason} />
-          </div>
-        ) : (
+        {calculation && (() => {
+          const calc = calculation as CalculationDetail;
+          return (
+            <div className="space-y-6">
+              <SalaryComponentsTable calculation={calc} />
+              <AllowancesTable allowances={calc.allowances} />
+              <DeductionsTable deductions={calc.deductions} />
+              <StatutoryContributions taxes={calc.taxes} insurances={calc.insurances} />
+              <ProrationDetails factor={calc.prorationFactor} reason={calc.prorationReason} />
+            </div>
+          );
+        })()}
+        {!calculation && (
           <p className="text-gray-500">Enter a run ID to view calculations</p>
         )}
       </div>

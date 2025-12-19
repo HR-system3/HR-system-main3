@@ -91,8 +91,8 @@ export default function PayrollClaimsPage() {
                   <td className="px-4 py-3 text-neutral-900">${claim.amount?.toFixed(2) || '0.00'}</td>
                   <td className="px-4 py-3">
                     <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ${
-                      claim.status === 'APPROVED' ? 'bg-green-100 text-green-800' :
-                      claim.status === 'REJECTED' ? 'bg-red-100 text-red-800' :
+                      claim.status === 'approved' ? 'bg-green-100 text-green-800' :
+                      claim.status === 'rejected' ? 'bg-red-100 text-red-800' :
                       'bg-yellow-100 text-yellow-800'
                     }`}>
                       {claim.status}

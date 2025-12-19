@@ -11,6 +11,7 @@ import { Position } from '@/types/position.types';
 import { useAuth } from '@/hooks/useAuth';
 import { hasPermission } from '@/lib/rolePermissions';
 import { formatDate } from '@/lib/utils';
+import { api } from '@/lib/axios';
 
 export default function PositionsPage() {
   const router = useRouter();

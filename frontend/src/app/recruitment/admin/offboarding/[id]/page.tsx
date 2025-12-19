@@ -114,9 +114,9 @@ export default function OffboardingPage({ params }: { params: { id: string } }) 
         const res = await ClearanceChecklistsService.create({
             terminationId: id,
             equipmentList: [
-                { name: 'Laptop', returned: false, condition: 'Good' },
-                { name: 'Monitor', returned: false, condition: 'Good' },
-                { name: 'Access Card', returned: false, condition: 'Good' }
+                { equipmentId: 'laptop', name: 'Laptop', returned: false, condition: 'Good' },
+                { equipmentId: 'monitor', name: 'Monitor', returned: false, condition: 'Good' },
+                { equipmentId: 'access-card', name: 'Access Card', returned: false, condition: 'Good' },
             ],
             items: [],
             cardReturned: false

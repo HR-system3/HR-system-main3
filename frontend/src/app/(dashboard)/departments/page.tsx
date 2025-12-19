@@ -11,6 +11,7 @@ import { Department } from '@/types/department.types';
 import { useAuth } from '@/hooks/useAuth';
 import { hasPermission } from '@/lib/rolePermissions';
 import { formatDate } from '@/lib/utils';
+import { api } from '@/lib/axios';
 
 export default function DepartmentsPage() {
   const router = useRouter();
